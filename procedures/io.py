@@ -59,7 +59,7 @@ def try_to_read_wav(file_path):
     return data
 
 
-def load_or_compute(name, folder, load, function, extension='.pickle', verbose=True) -> np.ndarray:
+def load_or_compute(name, folder, load, function, extension='.pickle', verbose=True):
     path = folder / (name + extension)
 
     if load.get(name, False):

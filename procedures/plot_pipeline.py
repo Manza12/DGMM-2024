@@ -27,7 +27,7 @@ def plot_compare(spectrogram_1, spectrogram_2, name, title, images_folder,
                                v_min_1=v_min_1, v_max_1=v_max_1, v_min_2=v_min_2, v_max_2=v_max_2,
                                c_map_1=c_map_1, c_map_2=c_map_2, title=title,
                                fig_size=fig_size,
-                               sharexy=paper.get('sharexy', False) if paper is not None else False,
+                               sharexy=paper.get('sharexy', False) if paper is not None else True,
                                cb_1=paper.get('cb_1', True) if paper is not None else True,
                                cb_2=paper.get('cb_2', True) if paper is not None else True,
                                full_screen=False)

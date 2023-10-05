@@ -5,7 +5,7 @@ from core.layers import create_stft_layer, apply_stft_layer
 
 from procedures.io import load_or_compute, write_signals, take_excerpt
 from procedures.morphological_pipeline import apply_morphology
-from procedures.plot_pipeline import plot_paper
+from procedures.plot_pipeline import plot_paper, plot_all
 from procedures.synthesis import synthesize_signals
 
 import settings as run_settings
@@ -13,6 +13,7 @@ import settings as run_settings
 # Parameters
 name = 'anastasia'
 settings = getattr(run_settings, name)
+paper = False
 
 components = {
     'input': True,
@@ -62,39 +63,39 @@ load = {
     'transient': True,
 }
 
-# plot = {
-#     # Input
-#     'input': True,
-#     'reconstruction_erosion': True,
-#     'erosion': True,
-#
-#     # Noise
-#     'opening': True,
-#     'white_noise': True,
-#     'filtered_noise': True,
-#     'input_noise': True,
-#
-#     # Sinusoids
-#     'erosion_reconstruction': False,
-#     'vertical_thin': False,
-#     'vertical_top_hat': False,
-#     'vertical_threshold': False,
-#     'horizontal_filtered': False,
-#     'horizontal_link': False,
-#     'lines_sinusoids': True,
-#     'input_sinusoids': True,
-#
-#     # Transient
-#     'horizontal_thin': False,
-#     'horizontal_top_hat': False,
-#     'horizontal_threshold': False,
-#     'vertical_filtered': False,
-#     'lines_transient': True,
-#     'input_transient': True,
-#
-#     # Output
-#     'input_output': True,
-# }
+plot = {
+    # Input
+    'input': True,
+    'reconstruction_erosion': True,
+    'erosion': True,
+
+    # Noise
+    'opening': True,
+    'white_noise': True,
+    'filtered_noise': True,
+    'input_noise': True,
+
+    # Sinusoids
+    'erosion_reconstruction': False,
+    'vertical_thin': False,
+    'vertical_top_hat': False,
+    'vertical_threshold': False,
+    'horizontal_filtered': False,
+    'horizontal_link': False,
+    'lines_sinusoids': True,
+    'input_sinusoids': True,
+
+    # Transient
+    'horizontal_thin': False,
+    'horizontal_top_hat': False,
+    'horizontal_threshold': False,
+    'vertical_filtered': False,
+    'lines_transient': True,
+    'input_transient': True,
+
+    # Output
+    'input_output': True,
+}
 
 # Paths
 project_folder = Path('.')
@@ -174,4 +175,6 @@ sys.stdout.close()
 
 # Plots
 if operations['plots']:
-    plot_paper(lines, spectrograms, components, paths, settings)
+    if paper:
+        plot_paper(lines, spectrograms, components, paths, settings)
+    plot_all(lines, signals, spectrograms, plot, components, paths)
