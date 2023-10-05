@@ -8,11 +8,11 @@ from procedures.morphological_pipeline import apply_morphology
 from procedures.plot_pipeline import plot_paper
 from procedures.synthesis import synthesize_signals
 
-from run_settings import settings
-
+import settings as run_settings
 
 # Parameters
 name = 'anastasia'
+settings = getattr(run_settings, name)
 
 components = {
     'input': True,
@@ -29,6 +29,7 @@ operations = {
     'plots': True,
 }
 
+# load = {}
 load = {
     # STFT Layer
     'stft_layer': True,
@@ -61,39 +62,39 @@ load = {
     'transient': True,
 }
 
-plot = {
-    # Input
-    'input': True,
-    'reconstruction_erosion': True,
-    'erosion': True,
-
-    # Noise
-    'opening': True,
-    'white_noise': True,
-    'filtered_noise': True,
-    'input_noise': True,
-
-    # Sinusoids
-    'erosion_reconstruction': False,
-    'vertical_thin': False,
-    'vertical_top_hat': False,
-    'vertical_threshold': False,
-    'horizontal_filtered': False,
-    'horizontal_link': False,
-    'lines_sinusoids': True,
-    'input_sinusoids': True,
-
-    # Transient
-    'horizontal_thin': False,
-    'horizontal_top_hat': False,
-    'horizontal_threshold': False,
-    'vertical_filtered': False,
-    'lines_transient': True,
-    'input_transient': True,
-
-    # Output
-    'input_output': True,
-}
+# plot = {
+#     # Input
+#     'input': True,
+#     'reconstruction_erosion': True,
+#     'erosion': True,
+#
+#     # Noise
+#     'opening': True,
+#     'white_noise': True,
+#     'filtered_noise': True,
+#     'input_noise': True,
+#
+#     # Sinusoids
+#     'erosion_reconstruction': False,
+#     'vertical_thin': False,
+#     'vertical_top_hat': False,
+#     'vertical_threshold': False,
+#     'horizontal_filtered': False,
+#     'horizontal_link': False,
+#     'lines_sinusoids': True,
+#     'input_sinusoids': True,
+#
+#     # Transient
+#     'horizontal_thin': False,
+#     'horizontal_top_hat': False,
+#     'horizontal_threshold': False,
+#     'vertical_filtered': False,
+#     'lines_transient': True,
+#     'input_transient': True,
+#
+#     # Output
+#     'input_output': True,
+# }
 
 # Paths
 project_folder = Path('.')
@@ -140,8 +141,8 @@ print('Getting input...')
 
 paths['file_path'] = paths['audio_folder'] / (name + '.wav')
 
-start = settings[name]['start']
-end = settings[name]['end']
+start = settings['start']
+end = settings['end']
 x = take_excerpt(paths['file_path'], start, end)
 
 # Create STFT layer
@@ -173,4 +174,4 @@ sys.stdout.close()
 
 # Plots
 if operations['plots']:
-    plot_paper(lines, spectrograms, components, paths, settings[name])
+    plot_paper(lines, spectrograms, components, paths, settings)

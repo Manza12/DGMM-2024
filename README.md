@@ -1,3 +1,3 @@
 # DGMM 2024
-## Applying Mathematical Morphology to Analyze Music Spectrograms
+## Mathematical Morphology Applied to Feature Extraction in Music Spectrograms
 ### Gonzalo Romero-García

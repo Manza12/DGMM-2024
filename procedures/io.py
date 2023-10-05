@@ -62,7 +62,7 @@ def try_to_read_wav(file_path):
 def load_or_compute(name, folder, load, function, extension='.pickle', verbose=True) -> np.ndarray:
     path = folder / (name + extension)
 
-    if load[name]:
+    if load.get(name, False):
         if extension == '.pickle':
             result = try_to_load_pickle(path, verbose=verbose, name=name)
         elif extension == '.wav':
@@ -72,7 +72,7 @@ def load_or_compute(name, folder, load, function, extension='.pickle', verbose=T
     else:
         result = None
 
-    if not load[name] or result is None:
+    if not load.get(name, False) or result is None:
         result = function()
         save_pickle(path, result)
 

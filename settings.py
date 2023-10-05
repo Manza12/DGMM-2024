@@ -351,14 +351,3 @@ anastasia = {
         'name': 'input_output'
     },
 }
-
-settings = {
-    'anastasia': anastasia,
-    'woodblock': woodblock,
-    'marimba': marimba,
-    'gong': gong,
-    'violin': violin,
-    'violin_vibrato': violin_vibrato,
-    'piano': piano,
-    'interferences': interferences
-}
