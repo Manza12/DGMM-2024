@@ -2,7 +2,6 @@ from core import *
 from core.plot import plot_stft, plot_lines, plot_two_spectrogram
 from core.processing import apply_reconstruction_by_erosion, apply_opening
 from core.parameters import MIN_DB
-from core.utils import get_duration
 
 
 def plot_single(spectrogram, name, title, images_folder, v_min=MIN_DB, v_max=0, c_map='afmhot', paper=None):
@@ -214,10 +213,15 @@ def plot_transient(lines, signals, spectrograms, plot, images_folder):
 def plot_output(spectrograms, plot, images_folder):
     spectrogram = spectrograms['input']
     spectrogram_output = spectrograms['output']
+    spectrogram_denoised = spectrograms['denoised']
 
     # Input - Output spectrogram
     if plot['input_output']:
         plot_compare(spectrogram, spectrogram_output, 'input_output', 'Input - Output', images_folder)
+
+    # Input - Denoised spectrogram
+    if plot['input_denoised']:
+        plot_compare(spectrogram, spectrogram_denoised, 'input_denoised', 'Input - Denoised', images_folder)
 
 
 def plot_all(lines, signals, spectrograms, plot, components, paths):

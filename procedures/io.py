@@ -106,3 +106,8 @@ def write_signals(signals, paths, components):
         output = signals['output']
         output_path = audio_folder / 'output.wav'
         write_wav(output_path, output)
+
+    if components['denoised']:
+        denoised = signals['denoised']
+        denoised_path = audio_folder / 'denoised.wav'
+        write_wav(denoised_path, denoised)

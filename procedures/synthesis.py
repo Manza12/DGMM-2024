@@ -80,17 +80,25 @@ def synthesize_output_signal(signals, spectrograms, stft_layer):
 
     print('\nSynthesis - Output')
     output_size = max(len(filtered_noise), len(sinusoids), len(transient))
+    denoised_size = max(len(sinusoids), len(transient))
 
     output = np.zeros(output_size, dtype=np.float32)
+    denoised = np.zeros(denoised_size, dtype=np.float32)
+
     output[:filtered_noise.size] += filtered_noise
     output[:sinusoids.size] += sinusoids
+    denoised[:sinusoids.size] += sinusoids
     output[:transient.size] += transient
+    denoised[:transient.size] += transient
 
     signals['output'] = output
+    signals['denoised'] = denoised
 
     spectrogram_output = apply_stft_layer(output, stft_layer, verbose=True, input_name='output')
+    spectrogram_denoised = apply_stft_layer(denoised, stft_layer, verbose=True, input_name='denoised')
 
     spectrograms['output'] = spectrogram_output
+    spectrograms['denoised'] = spectrogram_denoised
 
 
 def synthesize_signals(lines, signals, spectrograms, paths, load, components, stft_layer):

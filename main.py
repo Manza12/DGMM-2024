@@ -15,7 +15,7 @@ name = 'anastasia'
 settings = getattr(run_settings, name)
 paper = False
 load_any = False
-log = True
+log = False
 
 components = {
     'input': True,
@@ -23,6 +23,7 @@ components = {
     'sinusoids': True,
     'transient': True,
     'output': True,
+    'denoised': True,
 }
 
 operations = {
@@ -101,6 +102,7 @@ plot = {
 
     # Output
     'input_output': True,
+    'input_denoised': True,
 }
 
 # Paths

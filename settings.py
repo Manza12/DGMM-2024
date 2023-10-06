@@ -310,9 +310,8 @@ anastasia = {
     'start': 8.8,
     'end': 11.8,
     'parameters': {
-        # 'reconstruction_erosion_iterations': 10,
-        # 'closing_time_width': 0.025,
-        # 'closing_frequency_width': 75,
+        'closing_time_width': 0.025,
+        'closing_frequency_width': 75,
     },
     'input': {
         'x_lim': (0., 2.),
