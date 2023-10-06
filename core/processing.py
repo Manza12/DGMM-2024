@@ -27,7 +27,8 @@ def apply_closing(spectrogram, parameters, verbose=True):
 def apply_reconstruction_by_erosion(marker, spectrogram, verbose=True):
     start = time.time()
 
-    spectrogram_filled = reconstruction_erosion(marker, spectrogram, verbose_it_step=100, verbose=verbose)
+    spectrogram_filled = reconstruction_erosion(marker, spectrogram, verbose=verbose,
+                                                iterations=RECONSTRUCTION_EROSION_ITERATIONS)
 
     if verbose:
         torch.cuda.synchronize(DEVICE)
@@ -79,7 +80,8 @@ def apply_vertical_thinning(spectrogram, verbose=True):
 
     start = time.time()
 
-    spectrogram_thinned = greyscale_thinning(spectrogram, direction='v', verbose=verbose, verbose_it_step=100)
+    spectrogram_thinned = greyscale_thinning(spectrogram, direction='v', verbose=verbose,
+                                             iterations=VERTICAL_THINNING_ITERATIONS)
 
     if verbose:
         torch.cuda.synchronize(DEVICE)
@@ -139,7 +141,8 @@ def apply_horizontal_thinning(spectrogram, verbose=True):
     print('Applying horizontal thinning...')
     start = time.time()
 
-    spectrogram_thinned = greyscale_thinning(spectrogram, direction='h', verbose=verbose, verbose_it_step=100)
+    spectrogram_thinned = greyscale_thinning(spectrogram, direction='h', verbose=verbose,
+                                             iterations=HORIZONTAL_THINNING_ITERATIONS)
 
     if verbose:
         torch.cuda.synchronize(DEVICE)

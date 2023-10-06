@@ -14,7 +14,8 @@ import settings as run_settings
 name = 'anastasia'
 settings = getattr(run_settings, name)
 paper = False
-load_any = True
+load_any = False
+log = True
 
 components = {
     'input': True,
@@ -38,7 +39,8 @@ if load_any:
 
         # Input
         'spectrogram': True,
-        'reconstruction_erosion': True,
+        'closing': True,
+        'reconstruction_erosion': False,
         'erosion': True,
 
         # Noise
@@ -48,7 +50,7 @@ if load_any:
 
         # Sinusoids
         'erosion_reconstruction': True,
-        'vertical_thin': True,
+        'vertical_thin': False,
         'vertical_top_hat': True,
         'vertical_threshold': True,
         'horizontal_filtered': True,
@@ -56,7 +58,7 @@ if load_any:
         'sinusoids': True,
 
         # Transient
-        'horizontal_thin': True,
+        'horizontal_thin': False,
         'horizontal_top_hat': True,
         'horizontal_threshold': True,
         'vertical_filtered': True,
@@ -132,7 +134,6 @@ paths['arrays_folder'].mkdir(parents=True, exist_ok=True)
 paths['images_folder'].mkdir(parents=True, exist_ok=True)
 
 # Log
-log = False
 if log:
     log_path = paths['output_folder'] / 'log.txt'
     sys.stdout = open(log_path, 'w')

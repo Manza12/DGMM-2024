@@ -1,0 +1,61 @@
+Analyzing anastasia...
+
+Getting input...
+Time to apply STFT to signal: 2.630 seconds
+
+Processing...
+
+Morphology - Input
+Time to apply closing: 0.599 seconds
+Time to apply erosion: 0.022 seconds
+
+Morphology - Noise
+Time to apply opening: 0.636 seconds
+
+Morphology - Sinusoids
+Applying vertical thinning...
+it: 10
+Iterations performed: 10
+Time to apply vertical thinning: 1.170 seconds
+Time to apply vertical top-hat: 0.011 seconds
+Time to apply top-hat threshold: 0.002 seconds
+Time to remove small horizontal lines: 2.406 seconds
+
+Morphology - Transient
+Applying horizontal thinning...
+it: 10
+Iterations performed: 10
+Time to apply horizontal thinning: 1.335 seconds
+Time to apply horizontal top-hat: 0.006 seconds
+Time to apply top-hat threshold: 0.015 seconds
+Time to remove small vertical lines: 0.422 seconds
+
+Synthesis...
+
+Synthesis - Noise
+Time to apply STFT to white noise: 0.176 seconds
+Time to synthesize noise: 0.195 s
+Time to apply STFT to filtered noise: 0.173 seconds
+
+Synthesis - Sinusoids
+Finding time lines...
+Iteration 100 / 106
+Number of lines found: 106
+Time to find horizontal lines: 0.208 seconds
+Synthesizing sinusoids...
+Time to synthesize sinusoids: 0.073 s
+Time to apply STFT to sinusoids: 0.412 seconds
+
+Synthesis - Transient
+Finding frequency lines...
+Iteration 100 / 267
+Iteration 200 / 267
+Number of lines found: 256
+Time to find horizontal lines: 0.477 seconds
+Synthesizing transient...
+Time to synthesize transient: 5.620 s
+Time to apply STFT to transient: 0.379 seconds
+
+Synthesis - Output
+Time to apply STFT to output: 0.203 seconds
+Total time: 22.616 s

@@ -14,7 +14,8 @@ def apply_morphology_input(spectrograms, arrays_folder, load, parameters):
     # Reconstruction by erosion
     spectrogram_reconstruction_erosion = load_or_compute('reconstruction_erosion', arrays_folder, load,
                                                          lambda: apply_reconstruction_by_erosion(spectrogram_closing,
-                                                                                                 spectrogram))
+                                                                                                 spectrogram,
+                                                                                                 parameters))
 
     # Erosion
     spectrogram_erosion = load_or_compute('erosion', arrays_folder, load,

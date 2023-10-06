@@ -14,7 +14,6 @@ def dilation_geodesic(marker: torch.Tensor, condition: torch.Tensor):
 
 def reconstruction_erosion(marker: Optional[torch.Tensor], condition: torch.Tensor, iterations: Optional[int] = None,
                            verbose=False, verbose_it_step=10):
-    start = time.time()
 
     if verbose:
         print('Starting reconstruction by erosion...')
@@ -42,14 +41,16 @@ def reconstruction_erosion(marker: Optional[torch.Tensor], condition: torch.Tens
             break
 
     if verbose:
-        print('Time to apply reconstruction by erosion: %.3f seconds' % (time.time() - start))
+        if iterations is None:
+            print("Iterations needed for stability:", count)
+        else:
+            print("Iterations performed:", count)
 
     return x_recons
 
 
 def reconstruction_dilation(marker: Optional[torch.Tensor], condition: torch.Tensor, iterations: Optional[int] = None,
                             verbose=False, verbose_it_step=10):
-    start = time.time()
 
     if marker is None:
         marker = torch.zeros_like(condition) - 128
@@ -81,7 +82,7 @@ def reconstruction_dilation(marker: Optional[torch.Tensor], condition: torch.Ten
             break
 
     if verbose:
-        print('Time to apply reconstruction by dilation: %.3f seconds' % (time.time() - start))
+        print("Iterations needed for stability:", count)
 
     return x_recons
 
@@ -183,6 +184,12 @@ def greyscale_thinning(input_image: torch.Tensor, iterations: Optional[int] = No
 
         if count == iterations:
             break
+
+    if verbose:
+        if iterations is None:
+            print("Iterations needed for stability:", count)
+        else:
+            print("Iterations performed:", iterations)
 
     return x_thin
 
