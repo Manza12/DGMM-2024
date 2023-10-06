@@ -309,6 +309,10 @@ interferences = {
 anastasia = {
     'start': 8.8,
     'end': 11.8,
+    'parameters': {
+        'closing_time_width': 0.025,
+        'closing_frequency_width': 75,
+    },
     'input': {
         'x_lim': (0., 2.),
         'y_lim': (0, 12000),

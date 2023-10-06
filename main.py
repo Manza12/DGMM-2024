@@ -14,13 +14,14 @@ import settings as run_settings
 name = 'anastasia'
 settings = getattr(run_settings, name)
 paper = False
+load_any = True
 
 components = {
     'input': True,
     'noise': True,
-    'sinusoids': False,
-    'transient': False,
-    'output': False,
+    'sinusoids': True,
+    'transient': True,
+    'output': True,
 }
 
 operations = {
@@ -30,42 +31,45 @@ operations = {
     'plots': True,
 }
 
-# load = {}
-load = {
-    # STFT Layer
-    'stft_layer': True,
+if load_any:
+    load = {
+        # STFT Layer
+        'stft_layer': True,
 
-    # Input
-    'spectrogram': True,
-    'reconstruction_erosion': True,
-    'erosion': True,
+        # Input
+        'spectrogram': True,
+        'reconstruction_erosion': True,
+        'erosion': True,
 
-    # Noise
-    'white_noise': True,
-    'opening': True,
-    'filtered_noise': True,
+        # Noise
+        'white_noise': True,
+        'opening': True,
+        'filtered_noise': True,
 
-    # Sinusoids
-    'erosion_reconstruction': True,
-    'vertical_thin': True,
-    'vertical_top_hat': True,
-    'vertical_threshold': True,
-    'horizontal_filtered': True,
-    'lines_sinusoids': True,
-    'sinusoids': True,
+        # Sinusoids
+        'erosion_reconstruction': True,
+        'vertical_thin': True,
+        'vertical_top_hat': True,
+        'vertical_threshold': True,
+        'horizontal_filtered': True,
+        'lines_sinusoids': True,
+        'sinusoids': True,
 
-    # Transient
-    'horizontal_thin': True,
-    'horizontal_top_hat': True,
-    'horizontal_threshold': True,
-    'vertical_filtered': True,
-    'lines_transient': True,
-    'transient': True,
-}
+        # Transient
+        'horizontal_thin': True,
+        'horizontal_top_hat': True,
+        'horizontal_threshold': True,
+        'vertical_filtered': True,
+        'lines_transient': True,
+        'transient': True,
+    }
+else:
+    load = {}
 
 plot = {
     # Input
     'input': True,
+    'closing': True,
     'reconstruction_erosion': True,
     'erosion': True,
 
@@ -154,9 +158,10 @@ spectrogram = load_or_compute('spectrogram', paths['arrays_folder'], load, lambd
 
 # Morphology
 spectrograms = {'input': spectrogram}
+parameters = settings['parameters']
 if operations['processing']:
     print('\nProcessing...')
-    apply_morphology(spectrograms, paths, load, components)
+    apply_morphology(spectrograms, paths, load, components, parameters)
 
 # Synthesis
 signals = {'input': x}

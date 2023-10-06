@@ -368,6 +368,8 @@ def plot_pixels(x_list, label_list, m, n, show=True, v_min=None, v_max=None):
 
 
 def plot_lines(lines, fig=None, *args, paper=None, **kwargs):
+    if paper is None:
+        paper = {}
     if fig is None:
         fig, ax = plt.subplots(1, 1, figsize=paper.get('fig_size', (8., 4.)))
     else:
@@ -382,7 +384,7 @@ def plot_lines(lines, fig=None, *args, paper=None, **kwargs):
         kwargs.pop('label', None)
 
     # Full screen
-    if paper.get('full_screen', True):
+    if paper is None or paper.get('full_screen', True):
         if mpl.get_backend() == 'QtAgg':
             fig.canvas.manager.window.showMaximized()
         elif mpl.get_backend() == 'TkAgg':

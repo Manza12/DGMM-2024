@@ -8,7 +8,7 @@ from core.utils import get_duration
 def plot_single(spectrogram, name, title, images_folder, v_min=MIN_DB, v_max=0, c_map='afmhot', paper=None):
     fig = plot_stft(spectrogram.cpu().numpy(), v_min=v_min, v_max=v_max, c_map=c_map, title=title)
 
-    fig.savefig(images_folder / (name + '.png'), dpi=300)
+    fig.savefig(images_folder / (name + '.pdf'), dpi=300)
 
     if paper is not None:
         from core.parameters import TIME_RESOLUTION, FREQUENCY_PRECISION
@@ -31,7 +31,7 @@ def plot_compare(spectrogram_1, spectrogram_2, name, title, images_folder,
                                cb_1=paper.get('cb_1', True) if paper is not None else True,
                                cb_2=paper.get('cb_2', True) if paper is not None else True,
                                full_screen=False)
-    fig.savefig(images_folder / (name + '.png'), dpi=300)
+    fig.savefig(images_folder / (name + '.pdf'), dpi=300)
 
     if paper is not None:
         from core.parameters import TIME_RESOLUTION, FREQUENCY_PRECISION
@@ -79,33 +79,37 @@ def plot_input_lines(lines, filtered_lines, spectrogram, images_folder, paper=No
 
 def plot_input(spectrograms, plot, images_folder):
     spectrogram = spectrograms['input']
+    spectrogram_closing = spectrograms['closing']
     spectrogram_reconstruction_erosion = spectrograms['reconstruction_erosion']
+    spectrogram_erosion = spectrograms['erosion']
 
     # Input spectrogram
     if plot['input']:
         plot_single(spectrogram, 'input', 'Input', images_folder)
 
+    # Closing spectrogram
+    if plot['closing']:
+        plot_compare(spectrogram, spectrogram_closing, 'closing', 'Closing', images_folder)
+
     # Filled spectrogram
     if plot['reconstruction_erosion']:
-        plot_compare(spectrogram, spectrogram_reconstruction_erosion, 'reconstruction_erosion',
+        plot_compare(spectrogram_closing, spectrogram_reconstruction_erosion, 'reconstruction_erosion',
                      'Reconstruction by erosion', images_folder)
+
+    # Erosion spectrogram
+    if plot['erosion']:
+        plot_compare(spectrogram_reconstruction_erosion, spectrogram_erosion, 'erosion', 'Erosion', images_folder)
 
 
 def plot_noise(spectrograms, plot, images_folder):
     spectrogram = spectrograms['input']
     spectrogram_reconstruction_erosion = spectrograms['reconstruction_erosion']
     spectrogram_opening = spectrograms['opening']
-    spectrogram_erosion = spectrograms['erosion']
     spectrogram_filtered_noise = spectrograms['filtered_noise']
 
     # Opening spectrogram
     if plot['opening']:
         plot_compare(spectrogram_reconstruction_erosion, spectrogram_opening, 'opening', 'Opening', images_folder)
-
-    # Erosion spectrogram
-    if plot['erosion']:
-        plot_compare(spectrogram_opening, spectrogram_erosion, 'erosion', 'Erosion', images_folder)
-        plot_compare(spectrogram, spectrogram_filtered_noise, 'input_noise', 'Input - Noise', images_folder)
 
     # Filtered noise spectrogram
     if plot['filtered_noise']:
@@ -163,44 +167,44 @@ def plot_sinusoids(lines, spectrograms, plot, images_folder):
 def plot_transient(lines, signals, spectrograms, plot, images_folder):
     spectrogram = spectrograms['input']
     spectrogram_reconstruction_erosion = spectrograms['reconstruction_erosion']
-    spectrogram_horizontal_link = spectrograms['horizontal_link']
+    # spectrogram_horizontal_link = spectrograms['horizontal_link']
     spectrogram_transient = spectrograms['transient']
-    spectrogram_top_hat_transient = spectrograms['top_hat_transient']
-    spectrogram_closing_transient = spectrograms['closing_transient']
-    spectrogram_horizontal_thin = spectrograms['horizontal_thin']
+    spectrogram_top_hat_transient = spectrograms['horizontal_top_hat']
+    # spectrogram_closing_transient = spectrograms['closing_transient']
+    # spectrogram_horizontal_thin = spectrograms['horizontal_thin']
 
     # Top hat transient spectrogram
-    if plot['top_hat_transient']:
+    if plot['horizontal_top_hat']:
         plot_compare(spectrogram_reconstruction_erosion, spectrogram_top_hat_transient, 'top_hat_transient',
                      'Top hat transient', images_folder)
 
-    # Closing transient spectrogram
-    if plot['closing_transient']:
-        plot_compare(spectrogram_top_hat_transient, spectrogram_closing_transient, 'closing_transient',
-                     'Closing transient',
-                     images_folder)
+    # # Closing transient spectrogram
+    # if plot['closing_transient']:
+    #     plot_compare(spectrogram_top_hat_transient, spectrogram_closing_transient, 'closing_transient',
+    #                  'Closing transient',
+    #                  images_folder)
 
-    # Horizontal thinning spectrogram
-    if plot['horizontal_thin']:
-        plot_compare(spectrogram_closing_transient, spectrogram_horizontal_thin, 'horizontal_thin',
-                     'Horizontal thinning',
-                     images_folder)
+    # # Horizontal thinning spectrogram
+    # if plot['horizontal_thin']:
+    #     plot_compare(spectrogram_closing_transient, spectrogram_horizontal_thin, 'horizontal_thin',
+    #                  'Horizontal thinning',
+    #                  images_folder)
 
-    # Horizontal link spectrogram
-    if plot['horizontal_link']:
-        plot_compare(spectrogram_horizontal_thin, spectrogram_horizontal_link, 'horizontal_link', 'Horizontal link',
-                     images_folder)
+    # # Horizontal link spectrogram
+    # if plot['horizontal_link']:
+    #     plot_compare(spectrogram_horizontal_thin, spectrogram_horizontal_link, 'horizontal_link', 'Horizontal link',
+    #                  images_folder)
 
     # Lines - Transient
     if plot['lines_transient']:
         lines_transient = lines['transient']
-        sinusoids = signals['sinusoids']
-        plot_lines(lines_transient, x_lim=[0., get_duration(sinusoids)])
+        # sinusoids = signals['sinusoids']
+        plot_lines(lines_transient)
 
-    # Link - Transient spectrogram
-    if plot['horizontal_link']:
-        plot_compare(spectrogram_horizontal_link, spectrogram_transient, 'link_transient', 'Link - Transient',
-                     images_folder)
+    # # Link - Transient spectrogram
+    # if plot['horizontal_link']:
+    #     plot_compare(spectrogram_horizontal_link, spectrogram_transient, 'link_transient', 'Link - Transient',
+    #                  images_folder)
 
     # Input - Transient spectrogram
     if plot['input_transient']:
