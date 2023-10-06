@@ -7,21 +7,8 @@ from core.parameters import DEVICE
 from procedures.io import load_or_compute
 from procedures.plot_pipeline import plot_compare
 
-import settings as run_settings
-
-# Parameters
-name = 'anastasia'
-settings = getattr(run_settings, name)
-paper = False
 
 # Paths
-project_folder = Path('..') / Path('..')
-
-data_folder = project_folder / Path('data')
-
-audio_folder = data_folder / Path('audio')
-objects_folder = data_folder / Path('objects')
-
 output_folder = Path('.')
 
 arrays_folder = output_folder / Path('arrays')
@@ -31,7 +18,7 @@ images_folder.mkdir(parents=True, exist_ok=True)
 
 # Start
 start_full = time.time()
-print('Horizontal thinning of ' + name + '...\n')
+print('Horizontal thinning ...')
 
 # Load input spectrogram
 spectrogram = load_or_compute('reconstruction_erosion', arrays_folder, {'reconstruction_erosion': True},
@@ -59,7 +46,6 @@ print("Iterations needed for stability:", count)
 
 torch.cuda.synchronize(DEVICE)
 print('Time to apply horizontal thinning: %.3f seconds' % (time.time() - start))
-
 
 # End
 end_full = time.time()
