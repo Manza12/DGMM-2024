@@ -9,6 +9,9 @@ from procedures.io import load_or_compute
 from procedures.plot_pipeline import plot_compare
 
 
+# Parameters
+plot = False
+
 # Paths
 output_folder = Path('.')
 
@@ -31,18 +34,22 @@ spectrogram = load_or_compute('spectrogram', arrays_folder, {'spectrogram': True
 # Morphology - reconstruction by erosion
 marker = apply_closing(spectrogram, {})
 x_recons = torch.clone(marker)
+temp = torch.clone(marker)
 
-verbose_it_step = 100
+verbose_it_step = 10
 count = 0
 start = time.time()
 while True:
     x_out = erosion_geodesic(x_recons, spectrogram)
 
     if count % verbose_it_step == 0:
-        print("it:", count)
+        print("it:", count, 'log_diff: %.3f' % torch.log10(torch.sum(torch.abs(x_out - temp))).item())
 
-        plot_compare(spectrogram, x_out, 'reconstruction_erosion', 'Reconstruction by erosion', images_folder)
-        plt.show()
+        if plot:
+            plot_compare(temp, x_out, 'reconstruction_erosion', 'Reconstruction by erosion', images_folder)
+            plt.show()
+
+        temp = torch.clone(x_out)
 
     if torch.all(torch.eq(x_out, x_recons)):
         break
