@@ -10,8 +10,10 @@ def plot_single(spectrogram, name, title, images_folder, v_min=MIN_DB, v_max=0, 
 
     if paper is not None:
         from core.parameters import TIME_RESOLUTION, FREQUENCY_PRECISION
-        fig.axes[0].set_xlim(paper['x_lim'][0] / TIME_RESOLUTION, paper['x_lim'][1] / TIME_RESOLUTION)
-        fig.axes[0].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
+        if paper.get('x_lim', None) is not None:
+            fig.axes[0].set_xlim(paper['x_lim'][0] / TIME_RESOLUTION, paper['x_lim'][1] / TIME_RESOLUTION)
+        if paper.get('y_lim', None) is not None:
+            fig.axes[0].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
         fig.savefig(images_folder / (paper['name'] + '.pdf'), dpi=300)
 
     return fig
@@ -25,7 +27,7 @@ def plot_compare(spectrogram_1, spectrogram_2, name, title, images_folder,
                                v_min_1=v_min_1, v_max_1=v_max_1, v_min_2=v_min_2, v_max_2=v_max_2,
                                c_map_1=c_map_1, c_map_2=c_map_2, title=title,
                                fig_size=fig_size,
-                               sharexy=paper.get('sharexy', False) if paper is not None else True,
+                               sharexy=paper.get('sharexy', True) if paper is not None else True,
                                cb_1=paper.get('cb_1', True) if paper is not None else True,
                                cb_2=paper.get('cb_2', True) if paper is not None else True,
                                full_screen=False)
@@ -34,11 +36,12 @@ def plot_compare(spectrogram_1, spectrogram_2, name, title, images_folder,
     if paper is not None:
         from core.parameters import TIME_RESOLUTION, FREQUENCY_PRECISION
 
-        fig.axes[0].set_xlim(paper['x_lim'][0] / TIME_RESOLUTION, paper['x_lim'][1] / TIME_RESOLUTION)
-        fig.axes[0].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
-
-        fig.axes[1].set_xlim(paper['x_lim'][0] / TIME_RESOLUTION, paper['x_lim'][1] / TIME_RESOLUTION)
-        fig.axes[1].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
+        if paper.get('x_lim', None) is not None:
+            fig.axes[0].set_xlim(paper['x_lim'][0] / TIME_RESOLUTION, paper['x_lim'][1] / TIME_RESOLUTION)
+            fig.axes[1].set_xlim(paper['x_lim'][0] / TIME_RESOLUTION, paper['x_lim'][1] / TIME_RESOLUTION)
+        if paper.get('y_lim', None) is not None:
+            fig.axes[0].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
+            fig.axes[1].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
 
         dpi = 300
 
@@ -68,8 +71,10 @@ def plot_input_lines(lines, filtered_lines, spectrogram, images_folder, paper=No
     if paper is not None:
         from core.parameters import TIME_RESOLUTION, FREQUENCY_PRECISION
 
-        fig.axes[0].set_xlim(paper['x_lim'][0] / TIME_RESOLUTION, paper['x_lim'][1] / TIME_RESOLUTION)
-        fig.axes[0].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
+        if paper.get('x_lim', None) is not None:
+            fig.axes[0].set_xlim(paper['x_lim'][0] / TIME_RESOLUTION, paper['x_lim'][1] / TIME_RESOLUTION)
+        if paper.get('y_lim', None) is not None:
+            fig.axes[0].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
 
         dpi = 300
 

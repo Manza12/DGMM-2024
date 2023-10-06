@@ -1,6 +1,5 @@
 from . import *
 from .parameters import TIME_RESOLUTION, FREQUENCY_PRECISION
-from .tfst import TFST
 from .parameters import N_FFT, FS
 
 
@@ -132,80 +131,6 @@ def plot_stft(spectrogram: np.ndarray, v_min: float, v_max: float, title: str = 
             fig.canvas.manager.window.showMaximized()
 
     return fig
-
-
-def plot_cqt(spectrogram: np.ndarray, cqt_layer: cqt.CQT, v_min: float, v_max: float, title: str = '',
-             c_map: str = 'afmhot', fig_size: (float, float) = (6., 4.)):
-    fig = plt.figure(figsize=fig_size)
-    fig.suptitle(title)
-
-    ax = fig.subplots()
-
-    im = ax.imshow(spectrogram[0, :, :], cmap=c_map, aspect='auto', vmin=v_min, vmax=v_max, origin='lower')
-
-    # Freq axis
-    frequency_vector = cqt_layer.frequencies
-    ax.yaxis.set_major_formatter(tick.FuncFormatter(lambda x, pos: format_freq(x, pos, frequency_vector)))
-
-    # Time axis
-    time_vector = np.arange(spectrogram.shape[-1]) * cqt_layer.hop_length / cqt_layer.fs
-    ax.xaxis.set_major_formatter(tick.FuncFormatter(lambda x, pos: format_time(x, pos, time_vector)))
-
-    # Labels
-    ax.set_xlabel('Time (s)')
-    ax.set_ylabel('Frequency (Hz)')
-
-    # Colorbar
-    fig.colorbar(im, ax=ax, format="%2.0f dB")
-
-    plt.tight_layout()
-
-    return fig
-
-
-def plot_tfst(spectrogram: np.ndarray, tfst_layer: TFST, v_min: float, v_max: float, title: str = '',
-              fig_size: (float, float) = (6., 4.)):
-    fig = plt.figure(figsize=fig_size)
-    fig.suptitle(title)
-
-    plt.subplots_adjust(bottom=0.25)
-    ax = fig.subplots()
-
-    im = ax.imshow(spectrogram[0, :, :], cmap='afmhot', aspect='auto', vmin=v_min, vmax=v_max, origin='lower')
-    ax_slider = plt.axes([0.25, 0.1, 0.45, 0.03])
-
-    # Freq axis
-    frequency_vector = tfst_layer.frequencies.cpu().numpy()
-    ax.yaxis.set_major_formatter(tick.FuncFormatter(lambda x, pos: format_freq(x, pos, frequency_vector)))
-
-    # Time axis
-    time_vector = np.arange(spectrogram.shape[-1]) * tfst_layer.hop_length / tfst_layer.fs
-    ax.xaxis.set_major_formatter(tick.FuncFormatter(lambda x, pos: format_time(x, pos, time_vector)))
-
-    # Labels
-    ax.set_xlabel('Time (s)')
-    ax.set_ylabel('Frequency (Hz)')
-
-    # Colorbar
-    fig.colorbar(im, ax=ax, format="%2.0f dB")
-
-    # Slider
-    slider = wid.Slider(
-        ax=ax_slider,
-        label='Window size',
-        valmin=0,
-        valmax=spectrogram.shape[0] - 1,
-        valinit=0,
-        valstep=1,
-    )
-    slider.valtext.set_text(tfst_layer.sizes[0])
-
-    def update(val):
-        im.set_data(spectrogram[val, :, :])
-        slider.valtext.set_text(tfst_layer.sizes[val])
-        fig.canvas.draw()
-
-    return fig, slider, update
 
 
 def plot_two_spectrogram(spectrogram_1: np.ndarray, spectrogram_2: np.ndarray,
@@ -384,7 +309,7 @@ def plot_lines(lines, fig=None, *args, paper=None, **kwargs):
         kwargs.pop('label', None)
 
     # Full screen
-    if paper is None or paper.get('full_screen', True):
+    if paper is None or paper.get('full_screen', False):
         if mpl.get_backend() == 'QtAgg':
             fig.canvas.manager.window.showMaximized()
         elif mpl.get_backend() == 'TkAgg':

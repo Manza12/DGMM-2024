@@ -11,7 +11,7 @@ from procedures.synthesis import synthesize_signals
 import settings as run_settings
 
 # Parameters
-name = 'anastasia'
+name = 'violin_vibrato'
 settings = getattr(run_settings, name)
 load_any = False
 log = False
