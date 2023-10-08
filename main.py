@@ -2,6 +2,7 @@ import sys
 
 from core import *
 from core.layers import create_stft_layer, apply_stft_layer
+from core.parameters import TIME_RESOLUTION, FREQUENCY_PRECISION, WINDOW
 
 from procedures.io import load_or_compute, write_signals, take_excerpt
 from procedures.morphological_pipeline import apply_morphology
@@ -13,22 +14,22 @@ import settings as run_settings
 # Parameters
 name = 'anastasia'
 settings = getattr(run_settings, name)
-load_any = True
-log = False
+load_any = False
+log = True
 
 components = {
     'input': True,
     'noise': True,
     'sinusoids': True,
     'transient': True,
-    'output': False,
-    'denoised': False,
+    'output': True,
+    'denoised': True,
 }
 
 operations = {
     'processing': True,
     'synthesis': True,
-    'signals': False,
+    'signals': True,
     'plots': True,
 }
 
@@ -117,7 +118,8 @@ end = settings['end']
 x = take_excerpt(paths['file_path'], start, end)
 
 # Create STFT layer
-stft_layer = load_or_compute('stft_layer', paths['objects_folder'], load, create_stft_layer)
+layer_name = 'stft_layer_%d_ms_%d_Hz_%s' % (TIME_RESOLUTION * 1000, FREQUENCY_PRECISION, WINDOW)
+stft_layer = load_or_compute(layer_name, paths['objects_folder'], load, create_stft_layer)
 
 # Apply STFT layer
 spectrogram = load_or_compute('spectrogram', paths['arrays_folder'], load, lambda: apply_stft_layer(x, stft_layer))

@@ -7,6 +7,7 @@ anastasia = {
     },
     'plot': {
         # Input
+
         'input': {
             'y_lim': (0, 12000),
             'name': 'input',
@@ -26,6 +27,7 @@ anastasia = {
         },
 
         # Noise
+
         'opening': {
             'x_lim': (1.2, 2.2),
             'y_lim': (4800, 7200),
@@ -40,6 +42,7 @@ anastasia = {
         },
 
         # Sinusoids
+
         'vertical_thin': {
             'x_lim': (1.6, 1.9),
             'y_lim': (850, 2200),
@@ -60,20 +63,28 @@ anastasia = {
             'sharexy': False,
             'name': 'vertical_threshold'
         },
-        # 'horizontal_filtered': {
-        #     'y_lim': (0, 12000),
-        #     'name': 'horizontal_filtered'
-        # },
-        # 'lines_sinusoids': {
-        #     'y_lim': (0, 12000),
-        #     'name': 'lines_sinusoids'
-        # },
-        # 'input_sinusoids': {
-        #     'y_lim': (0, 12000),
-        #     'name': 'input_sinusoids'
-        # },
+
+
+
+        'horizontal_filtered': {
+            'x_lim': (1., 2.),
+            'y_lim': (0, 2000),
+            'name': 'horizontal_filtered'
+        },
+
+
+
+        'lines_sinusoids': {
+            'y_lim': (0, 12000),
+            'name': 'lines_sinusoids'
+        },
+        'input_sinusoids': {
+            'y_lim': (0, 12000),
+            'name': 'input_sinusoids'
+        },
 
         # Transients
+
         'horizontal_thin': {
             'x_lim': (1.6, 1.9),
             'y_lim': (850, 2200),
@@ -94,28 +105,35 @@ anastasia = {
             'sharexy': False,
             'name': 'horizontal_threshold',
         },
-        # 'vertical_filtered': {
-        #     'y_lim': (0, 12000),
-        #     'name': 'vertical_filtered',
-        # },
-        # 'lines_transient': {
-        #     'y_lim': (0, 12000),
-        #     'name': 'lines_transient',
-        # },
-        # 'input_transient': {
-        #     'y_lim': (0, 12000),
-        #     'name': 'input_transient'
-        # },
-        #
-        # # Output
-        # 'input_output': {
-        #     'y_lim': (0, 12000),
-        #     'name': 'input_output'
-        # },
-        # 'input_denoised': {
-        #     'y_lim': (0, 12000),
-        #     'name': 'input_denoised'
-        # },
+
+
+
+        'vertical_filtered': {
+            'x_lim': (0.9, 1.6),
+            'y_lim': (0, 5000),
+            'name': 'vertical_filtered',
+        },
+
+
+
+        'lines_transient': {
+            'y_lim': (0, 12000),
+            'name': 'lines_transient',
+        },
+        'input_transient': {
+            'y_lim': (0, 12000),
+            'name': 'input_transient'
+        },
+
+        # Output
+        'input_output': {
+            'y_lim': (0, 12000),
+            'name': 'input_output'
+        },
+        'input_denoised': {
+            'y_lim': (0, 12000),
+            'name': 'input_denoised'
+        },
     }
 }
 
