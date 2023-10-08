@@ -59,7 +59,32 @@ def plot_compare(spectrogram_1, spectrogram_2, name, title, images_folder,
     return fig
 
 
-def plot_input_lines(lines, filtered_lines, spectrogram, images_folder, paper=None):
+def plot_input_lines(horizontal_lines, vertical_lines, spectrogram, images_folder, paper=None):
+    fig = plot_stft(spectrogram.cpu().numpy(), v_min=MIN_DB, v_max=0, c_map='afmhot', title='Input + lines',
+                    full_screen=False, fig_size=paper.get('fig_size', (6., 4.)),
+                    cb=paper.get('cb', True) if paper is not None else True)
+
+    plot_lines(horizontal_lines, fig, 'b', paper=paper, label='Horizontal lines')
+    plot_lines(vertical_lines, fig, 'c', paper=paper, label='Vertical lines')
+
+    plt.legend(loc='upper right')
+
+    if paper is not None:
+        from core.parameters import TIME_RESOLUTION, FREQUENCY_PRECISION
+
+        if paper.get('x_lim', None) is not None:
+            fig.axes[0].set_xlim(paper['x_lim'][0] / TIME_RESOLUTION, paper['x_lim'][1] / TIME_RESOLUTION)
+        if paper.get('y_lim', None) is not None:
+            fig.axes[0].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
+
+        dpi = 300
+
+        plt.tight_layout()
+
+        fig.savefig(images_folder / (paper['name'] + '.pdf'), dpi=dpi)
+
+
+def plot_input_lines_filtered(lines, filtered_lines, spectrogram, images_folder, paper=None):
     fig = plot_stft(spectrogram.cpu().numpy(), v_min=MIN_DB, v_max=0, c_map='afmhot', title='Input + lines',
                     full_screen=False, fig_size=paper.get('fig_size', (6., 4.)),
                     cb=paper.get('cb', True) if paper is not None else True)
@@ -162,9 +187,9 @@ def plot_sinusoids(lines, spectrograms, images_folder, settings):
 
     # Lines - Sinusoids
     if settings.get('lines_sinusoids', None) is not None:
-        plot_input_lines(lines['sinusoids'], lines['filtered_sinusoids'], spectrograms['input'],
-                         images_folder,
-                         paper=settings['lines_sinusoids'])
+        plot_input_lines_filtered(lines['sinusoids'], lines['filtered_sinusoids'], spectrograms['input'],
+                                  images_folder,
+                                  paper=settings['lines_sinusoids'])
 
     # Input - Sinusoids spectrogram
     if settings.get('input_sinusoids', None) is not None:
@@ -207,9 +232,9 @@ def plot_transient(lines, spectrograms, images_folder, settings):
 
     # Lines - Transient
     if settings.get('lines_transient', None) is not None:
-        plot_input_lines(lines['transient'], lines['filtered_transient'], spectrograms['input'],
-                         images_folder,
-                         paper=settings['lines_transient'])
+        plot_input_lines_filtered(lines['transient'], lines['filtered_transient'], spectrograms['input'],
+                                  images_folder,
+                                  paper=settings['lines_transient'])
 
     # Input - Transient spectrogram
     if settings.get('input_transient', None) is not None:
@@ -219,7 +244,13 @@ def plot_transient(lines, spectrograms, images_folder, settings):
                      paper=settings['input_transient'])
 
 
-def plot_output(spectrograms, images_folder, settings):
+def plot_output(spectrograms, lines, images_folder, settings):
+    # Input - lines
+    if settings.get('input_lines', None) is not None:
+        plot_input_lines(lines['sinusoids'], lines['transient'], spectrograms['input'],
+                         images_folder,
+                         paper=settings['input_lines'])
+
     # Input - Output spectrogram
     if settings.get('input_output', None) is not None:
         plot_compare(spectrograms['input'], spectrograms['output'],
@@ -245,6 +276,6 @@ def plot_all(lines, spectrograms, components, paths, settings):
     if components['transient']:
         plot_transient(lines, spectrograms, paths['images_folder'], settings['plot'])
     if components['output']:
-        plot_output(spectrograms, paths['images_folder'], settings['plot'])
+        plot_output(spectrograms, lines, paths['images_folder'], settings['plot'])
 
     plt.show()

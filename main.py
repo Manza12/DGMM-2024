@@ -14,8 +14,8 @@ import settings as run_settings
 # Parameters
 name = 'anastasia'
 settings = getattr(run_settings, name)
-load_any = False
-log = True
+load_any = True
+log = False
 
 components = {
     'input': True,
@@ -33,10 +33,11 @@ operations = {
     'plots': True,
 }
 
+layer_name = 'stft_layer_%d_ms_%d_Hz_%s' % (TIME_RESOLUTION * 1000, FREQUENCY_PRECISION, WINDOW)
 if load_any:
     load = {
         # STFT Layer
-        'stft_layer': True,
+        layer_name: True,
 
         # Input
         'spectrogram': True,
@@ -118,7 +119,6 @@ end = settings['end']
 x = take_excerpt(paths['file_path'], start, end)
 
 # Create STFT layer
-layer_name = 'stft_layer_%d_ms_%d_Hz_%s' % (TIME_RESOLUTION * 1000, FREQUENCY_PRECISION, WINDOW)
 stft_layer = load_or_compute(layer_name, paths['objects_folder'], load, create_stft_layer)
 
 # Apply STFT layer
