@@ -121,12 +121,14 @@ def apply_top_hat_threshold(spectrogram, spectrogram_top_hat, threshold=TOP_HAT_
 
 
 def remove_small_horizontal_lines(spectrogram, verbose=True):
+    print('Removing small horizontal lines...')
+
     start = time.time()
 
     min_length_bins = int(MIN_LENGTH_SINUSOIDS / TIME_RESOLUTION)
     iterations = min_length_bins // 2
 
-    spectrogram_trimming = greyscale_trimming(spectrogram, iterations, 'h')
+    spectrogram_trimming = greyscale_trimming(spectrogram, iterations, 'h', verbose=verbose)
     spectrogram_reconstruction = reconstruction_dilation(spectrogram_trimming, spectrogram)
 
     if verbose:
@@ -168,12 +170,14 @@ def apply_horizontal_top_hat(spectrogram, verbose=True):
 
 
 def remove_small_vertical_lines(spectrogram, verbose=True):
+    print('Removing small vertical lines...')
+
     start = time.time()
 
     min_length_bins = int(MIN_LENGTH_TRANSIENT / FREQUENCY_PRECISION)
     iterations = min_length_bins // 2
 
-    spectrogram_trimming = greyscale_trimming(spectrogram, iterations, 'v')
+    spectrogram_trimming = greyscale_trimming(spectrogram, iterations, 'v', verbose=verbose)
     spectrogram_reconstruction = reconstruction_dilation(spectrogram_trimming, spectrogram)
 
     if verbose:
