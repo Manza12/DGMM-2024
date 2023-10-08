@@ -11,9 +11,9 @@ from procedures.synthesis import synthesize_signals
 import settings as run_settings
 
 # Parameters
-name = 'violin_vibrato'
+name = 'anastasia'
 settings = getattr(run_settings, name)
-load_any = False
+load_any = True
 log = False
 
 components = {
@@ -21,18 +21,17 @@ components = {
     'noise': True,
     'sinusoids': True,
     'transient': True,
-    'output': True,
-    'denoised': True,
+    'output': False,
+    'denoised': False,
 }
 
 operations = {
     'processing': True,
     'synthesis': True,
-    'signals': True,
+    'signals': False,
     'plots': True,
 }
 
-load = {}
 if load_any:
     load = {
         # STFT Layer
@@ -41,8 +40,7 @@ if load_any:
         # Input
         'spectrogram': True,
         'closing': True,
-        'reconstruction_erosion': False,
-        'erosion': True,
+        'reconstruction_erosion': True,
 
         # Noise
         'white_noise': True,
@@ -50,21 +48,25 @@ if load_any:
         'filtered_noise': True,
 
         # Sinusoids
-        'vertical_thin': False,
+        'vertical_thin': True,
         'vertical_top_hat': True,
         'vertical_threshold': True,
-        'horizontal_filtered': True,
-        'lines_sinusoids': True,
-        'sinusoids': True,
+
+        'horizontal_filtered': False,
+        'lines_sinusoids': False,
+        'sinusoids': False,
 
         # Transient
-        'horizontal_thin': False,
+        'horizontal_thin': True,
         'horizontal_top_hat': True,
         'horizontal_threshold': True,
-        'vertical_filtered': True,
-        'lines_transient': True,
-        'transient': True,
+
+        'vertical_filtered': False,
+        'lines_transient': False,
+        'transient': False,
     }
+else:
+    load = {}
 
 # Paths
 project_folder = Path('.')

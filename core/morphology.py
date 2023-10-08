@@ -13,7 +13,7 @@ def dilation_geodesic(marker: torch.Tensor, condition: torch.Tensor):
 
 
 def reconstruction_erosion(marker: Optional[torch.Tensor], condition: torch.Tensor, iterations: Optional[int] = None,
-                           verbose=False, verbose_it_step=10):
+                           verbose=False, verbose_it_step=100):
 
     if verbose:
         print('Starting reconstruction by erosion...')

@@ -4,7 +4,8 @@ from core.parameters import MIN_DB
 
 
 def plot_single(spectrogram, name, title, images_folder, v_min=MIN_DB, v_max=0, c_map='afmhot', paper=None):
-    fig = plot_stft(spectrogram.cpu().numpy(), v_min=v_min, v_max=v_max, c_map=c_map, title=title)
+    fig = plot_stft(spectrogram.cpu().numpy(), v_min=v_min, v_max=v_max, c_map=c_map, title=title,
+                    fig_size=paper.get('fig_size', (6., 4.)) if paper is not None else (6., 4.))
 
     fig.savefig(images_folder / (name + '.pdf'), dpi=300)
 
@@ -98,21 +99,21 @@ def plot_input(spectrograms, images_folder, settings):
 
     # Reconstruction by erosion spectrogram
     if settings.get('reconstruction_erosion', None) is not None:
-        plot_compare(spectrograms['input'], spectrograms['reconstruction_erosion'],
+        plot_compare(spectrograms['closing'], spectrograms['reconstruction_erosion'],
                      'reconstruction_erosion', 'Reconstruction by erosion', images_folder,
                      paper=settings['reconstruction_erosion'])
 
-    # Erosion spectrogram
-    if settings.get('erosion', None) is not None:
-        plot_compare(spectrograms['reconstruction_erosion'], spectrograms['erosion'],
-                     'erosion', 'Erosion', images_folder,
-                     paper=settings['erosion'])
+    # # Erosion spectrogram
+    # if settings.get('erosion', None) is not None:
+    #     plot_compare(spectrograms['reconstruction_erosion'], spectrograms['erosion'],
+    #                  'erosion', 'Erosion', images_folder,
+    #                  paper=settings['erosion'])
 
 
 def plot_noise(spectrograms, images_folder, settings):
     # Opening spectrogram
     if settings.get('opening', None) is not None:
-        plot_compare(spectrograms['erosion'], spectrograms['opening'],
+        plot_compare(spectrograms['reconstruction_erosion'], spectrograms['opening'],
                      'opening', 'Opening', images_folder,
                      paper=settings['opening'])
 

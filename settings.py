@@ -9,92 +9,113 @@ anastasia = {
         # Input
         'input': {
             'y_lim': (0, 12000),
-            'name': 'input'
+            'name': 'input',
+            'fig_size': (8, 4)
         },
         'closing': {
-            'y_lim': (0, 12000),
+            'x_lim': (1., 1.5),
+            'y_lim': (400, 1800),
+            'sharexy': False,
             'name': 'closing'
         },
         'reconstruction_erosion': {
-            'y_lim': (0, 12000),
+            'x_lim': (1., 1.5),
+            'y_lim': (400, 1800),
+            'sharexy': False,
             'name': 'reconstruction_erosion'
-        },
-        'erosion': {
-            'y_lim': (0, 12000),
-            'name': 'erosion'
         },
 
         # Noise
         'opening': {
-            'y_lim': (0, 12000),
+            'x_lim': (1.2, 2.2),
+            'y_lim': (4800, 7200),
+            'sharexy': False,
             'name': 'opening'
         },
         'input_noise': {
-            'y_lim': (0, 12000),
+            'x_lim': (1.2, 2.2),
+            'y_lim': (4800, 7200),
+            'sharexy': False,
             'name': 'input_noise'
         },
 
         # Sinusoids
         'vertical_thin': {
-            'y_lim': (0, 12000),
+            'x_lim': (1.6, 1.9),
+            'y_lim': (850, 2200),
+            'sharexy': False,
             'name': 'vertical_thin'
         },
         'vertical_top_hat': {
-            'y_lim': (0, 12000),
+            'x_lim': (1.6, 1.9),
+            'y_lim': (850, 1600),
+            'fig_size': (8., 2.),
+            'sharexy': False,
             'name': 'vertical_top_hat'
         },
         'vertical_threshold': {
-            'y_lim': (0, 12000),
+            'x_lim': (1.6, 1.9),
+            'y_lim': (850, 1600),
+            'fig_size': (8., 2.),
+            'sharexy': False,
             'name': 'vertical_threshold'
         },
-        'horizontal_filtered': {
-            'y_lim': (0, 12000),
-            'name': 'horizontal_filtered'
-        },
-        'lines_sinusoids': {
-            'y_lim': (0, 12000),
-            'name': 'lines_sinusoids'
-        },
-        'input_sinusoids': {
-            'y_lim': (0, 12000),
-            'name': 'input_sinusoids'
-        },
+        # 'horizontal_filtered': {
+        #     'y_lim': (0, 12000),
+        #     'name': 'horizontal_filtered'
+        # },
+        # 'lines_sinusoids': {
+        #     'y_lim': (0, 12000),
+        #     'name': 'lines_sinusoids'
+        # },
+        # 'input_sinusoids': {
+        #     'y_lim': (0, 12000),
+        #     'name': 'input_sinusoids'
+        # },
 
         # Transients
         'horizontal_thin': {
-            'y_lim': (0, 12000),
+            'x_lim': (1.6, 1.9),
+            'y_lim': (850, 2200),
+            'sharexy': False,
             'name': 'horizontal_thin',
         },
         'horizontal_top_hat': {
-            'y_lim': (0, 12000),
+            'x_lim': (1.65, 1.75),
+            'y_lim': (850, 2200),
+            'fig_size': (5., 4.),
+            'sharexy': False,
             'name': 'horizontal_top_hat',
         },
         'horizontal_threshold': {
-            'y_lim': (0, 12000),
+            'x_lim': (1.65, 1.75),
+            'y_lim': (850, 2200),
+            'fig_size': (5., 4.),
+            'sharexy': False,
             'name': 'horizontal_threshold',
         },
-        'vertical_filtered': {
-            'y_lim': (0, 12000),
-            'name': 'vertical_filtered',
-        },
-        'lines_transient': {
-            'y_lim': (0, 12000),
-            'name': 'lines_transient',
-        },
-        'input_transient': {
-            'y_lim': (0, 12000),
-            'name': 'input_transient'
-        },
-
-        # Output
-        'input_output': {
-            'y_lim': (0, 12000),
-            'name': 'input_output'
-        },
-        'input_denoised': {
-            'y_lim': (0, 12000),
-            'name': 'input_denoised'
-        },
+        # 'vertical_filtered': {
+        #     'y_lim': (0, 12000),
+        #     'name': 'vertical_filtered',
+        # },
+        # 'lines_transient': {
+        #     'y_lim': (0, 12000),
+        #     'name': 'lines_transient',
+        # },
+        # 'input_transient': {
+        #     'y_lim': (0, 12000),
+        #     'name': 'input_transient'
+        # },
+        #
+        # # Output
+        # 'input_output': {
+        #     'y_lim': (0, 12000),
+        #     'name': 'input_output'
+        # },
+        # 'input_denoised': {
+        #     'y_lim': (0, 12000),
+        #     'name': 'input_denoised'
+        # },
     }
 }
 
@@ -105,77 +126,7 @@ toccata_fuga = {
         'closing_time_width': 0.025,
         'closing_frequency_width': 75,
     },
-    'plot': {
-        # Input
-        'input': {
-            'name': 'input'
-        },
-        'closing': {
-            'name': 'closing'
-        },
-        'reconstruction_erosion': {
-            'name': 'reconstruction_erosion'
-        },
-        'erosion': {
-            'name': 'erosion'
-        },
-
-        # Noise
-        'opening': {
-            'name': 'opening'
-        },
-        'input_noise': {
-            'name': 'input_noise'
-        },
-
-        # Sinusoids
-        'vertical_thin': {
-            'name': 'vertical_thin'
-        },
-        'vertical_top_hat': {
-            'name': 'vertical_top_hat'
-        },
-        'vertical_threshold': {
-            'name': 'vertical_threshold'
-        },
-        'horizontal_filtered': {
-            'name': 'horizontal_filtered'
-        },
-        'lines_sinusoids': {
-            'name': 'lines_sinusoids'
-        },
-        'input_sinusoids': {
-            'name': 'input_sinusoids'
-        },
-
-        # Transients
-        'horizontal_thin': {
-            'name': 'horizontal_thin',
-        },
-        'horizontal_top_hat': {
-            'name': 'horizontal_top_hat',
-        },
-        'horizontal_threshold': {
-            'name': 'horizontal_threshold',
-        },
-        'vertical_filtered': {
-            'name': 'vertical_filtered',
-        },
-        'lines_transient': {
-            'name': 'lines_transient',
-        },
-        'input_transient': {
-            'name': 'input_transient'
-        },
-
-        # Output
-        'input_output': {
-            'name': 'input_output'
-        },
-        'input_denoised': {
-            'name': 'input_denoised'
-        },
-    }
+    'plot': {},
 }
 
 luis_alonso = {
@@ -185,77 +136,7 @@ luis_alonso = {
         'closing_time_width': 0.025,
         'closing_frequency_width': 75,
     },
-    'plot': {
-        # Input
-        'input': {
-            'name': 'input'
-        },
-        'closing': {
-            'name': 'closing'
-        },
-        'reconstruction_erosion': {
-            'name': 'reconstruction_erosion'
-        },
-        'erosion': {
-            'name': 'erosion'
-        },
-
-        # Noise
-        'opening': {
-            'name': 'opening'
-        },
-        'input_noise': {
-            'name': 'input_noise'
-        },
-
-        # Sinusoids
-        'vertical_thin': {
-            'name': 'vertical_thin'
-        },
-        'vertical_top_hat': {
-            'name': 'vertical_top_hat'
-        },
-        'vertical_threshold': {
-            'name': 'vertical_threshold'
-        },
-        'horizontal_filtered': {
-            'name': 'horizontal_filtered'
-        },
-        'lines_sinusoids': {
-            'name': 'lines_sinusoids'
-        },
-        'input_sinusoids': {
-            'name': 'input_sinusoids'
-        },
-
-        # Transients
-        'horizontal_thin': {
-            'name': 'horizontal_thin',
-        },
-        'horizontal_top_hat': {
-            'name': 'horizontal_top_hat',
-        },
-        'horizontal_threshold': {
-            'name': 'horizontal_threshold',
-        },
-        'vertical_filtered': {
-            'name': 'vertical_filtered',
-        },
-        'lines_transient': {
-            'name': 'lines_transient',
-        },
-        'input_transient': {
-            'name': 'input_transient'
-        },
-
-        # Output
-        'input_output': {
-            'name': 'input_output'
-        },
-        'input_denoised': {
-            'name': 'input_denoised'
-        },
-    }
+    'plot': {},
 }
 
 flute_bach = {
@@ -265,77 +146,7 @@ flute_bach = {
         'closing_time_width': 0.025,
         'closing_frequency_width': 75,
     },
-    'plot': {
-        # Input
-        'input': {
-            'name': 'input'
-        },
-        'closing': {
-            'name': 'closing'
-        },
-        'reconstruction_erosion': {
-            'name': 'reconstruction_erosion'
-        },
-        'erosion': {
-            'name': 'erosion'
-        },
-
-        # Noise
-        'opening': {
-            'name': 'opening'
-        },
-        'input_noise': {
-            'name': 'input_noise'
-        },
-
-        # Sinusoids
-        'vertical_thin': {
-            'name': 'vertical_thin'
-        },
-        'vertical_top_hat': {
-            'name': 'vertical_top_hat'
-        },
-        'vertical_threshold': {
-            'name': 'vertical_threshold'
-        },
-        'horizontal_filtered': {
-            'name': 'horizontal_filtered'
-        },
-        'lines_sinusoids': {
-            'name': 'lines_sinusoids'
-        },
-        'input_sinusoids': {
-            'name': 'input_sinusoids'
-        },
-
-        # Transients
-        'horizontal_thin': {
-            'name': 'horizontal_thin',
-        },
-        'horizontal_top_hat': {
-            'name': 'horizontal_top_hat',
-        },
-        'horizontal_threshold': {
-            'name': 'horizontal_threshold',
-        },
-        'vertical_filtered': {
-            'name': 'vertical_filtered',
-        },
-        'lines_transient': {
-            'name': 'lines_transient',
-        },
-        'input_transient': {
-            'name': 'input_transient'
-        },
-
-        # Output
-        'input_output': {
-            'name': 'input_output'
-        },
-        'input_denoised': {
-            'name': 'input_denoised'
-        },
-    }
+    'plot': {},
 }
 
 partita_b_minor = {
@@ -345,77 +156,7 @@ partita_b_minor = {
         'closing_time_width': 0.025,
         'closing_frequency_width': 75,
     },
-    'plot': {
-        # Input
-        'input': {
-            'name': 'input'
-        },
-        'closing': {
-            'name': 'closing'
-        },
-        'reconstruction_erosion': {
-            'name': 'reconstruction_erosion'
-        },
-        'erosion': {
-            'name': 'erosion'
-        },
-
-        # Noise
-        'opening': {
-            'name': 'opening'
-        },
-        'input_noise': {
-            'name': 'input_noise'
-        },
-
-        # Sinusoids
-        'vertical_thin': {
-            'name': 'vertical_thin'
-        },
-        'vertical_top_hat': {
-            'name': 'vertical_top_hat'
-        },
-        'vertical_threshold': {
-            'name': 'vertical_threshold'
-        },
-        'horizontal_filtered': {
-            'name': 'horizontal_filtered'
-        },
-        'lines_sinusoids': {
-            'name': 'lines_sinusoids'
-        },
-        'input_sinusoids': {
-            'name': 'input_sinusoids'
-        },
-
-        # Transients
-        'horizontal_thin': {
-            'name': 'horizontal_thin',
-        },
-        'horizontal_top_hat': {
-            'name': 'horizontal_top_hat',
-        },
-        'horizontal_threshold': {
-            'name': 'horizontal_threshold',
-        },
-        'vertical_filtered': {
-            'name': 'vertical_filtered',
-        },
-        'lines_transient': {
-            'name': 'lines_transient',
-        },
-        'input_transient': {
-            'name': 'input_transient'
-        },
-
-        # Output
-        'input_output': {
-            'name': 'input_output'
-        },
-        'input_denoised': {
-            'name': 'input_denoised'
-        },
-    }
+    'plot': {},
 }
 
 violin_vibrato = {
@@ -425,75 +166,5 @@ violin_vibrato = {
         'closing_time_width': 0.025,
         'closing_frequency_width': 75,
     },
-    'plot': {
-        # Input
-        'input': {
-            'name': 'input'
-        },
-        'closing': {
-            'name': 'closing'
-        },
-        'reconstruction_erosion': {
-            'name': 'reconstruction_erosion'
-        },
-        'erosion': {
-            'name': 'erosion'
-        },
-
-        # Noise
-        'opening': {
-            'name': 'opening'
-        },
-        'input_noise': {
-            'name': 'input_noise'
-        },
-
-        # Sinusoids
-        'vertical_thin': {
-            'name': 'vertical_thin'
-        },
-        'vertical_top_hat': {
-            'name': 'vertical_top_hat'
-        },
-        'vertical_threshold': {
-            'name': 'vertical_threshold'
-        },
-        'horizontal_filtered': {
-            'name': 'horizontal_filtered'
-        },
-        'lines_sinusoids': {
-            'name': 'lines_sinusoids'
-        },
-        'input_sinusoids': {
-            'name': 'input_sinusoids'
-        },
-
-        # Transients
-        'horizontal_thin': {
-            'name': 'horizontal_thin',
-        },
-        'horizontal_top_hat': {
-            'name': 'horizontal_top_hat',
-        },
-        'horizontal_threshold': {
-            'name': 'horizontal_threshold',
-        },
-        'vertical_filtered': {
-            'name': 'vertical_filtered',
-        },
-        'lines_transient': {
-            'name': 'lines_transient',
-        },
-        'input_transient': {
-            'name': 'input_transient'
-        },
-
-        # Output
-        'input_output': {
-            'name': 'input_output'
-        },
-        'input_denoised': {
-            'name': 'input_denoised'
-        },
-    }
+    'plot': {},
 }
