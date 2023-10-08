@@ -53,7 +53,8 @@ def reconstruction_dilation(marker: Optional[torch.Tensor], condition: torch.Ten
                             verbose=False, verbose_it_step=10):
 
     if marker is None:
-        marker = torch.zeros_like(condition) - 128
+        from .parameters import MIN_DB
+        marker = torch.zeros_like(condition) - MIN_DB
         marker[condition == torch.max(condition)] = torch.max(condition)
 
     x_recons = torch.clone(marker)
