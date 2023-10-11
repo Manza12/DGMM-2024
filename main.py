@@ -12,7 +12,7 @@ from procedures.synthesis import synthesize_signals
 import settings as run_settings
 
 # Parameters
-name = 'woodblock'
+name = 'anastasia'
 settings = getattr(run_settings, name)
 load_any = True
 log = False

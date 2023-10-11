@@ -64,8 +64,14 @@ def plot_input_lines(horizontal_lines, vertical_lines, spectrogram, images_folde
                     full_screen=False, fig_size=paper.get('fig_size', (6., 4.)),
                     cb=paper.get('cb', True) if paper is not None else True)
 
-    plot_lines(horizontal_lines, fig, 'b', paper=paper, label='Horizontal lines')
-    plot_lines(vertical_lines, fig, 'c', paper=paper, label='Vertical lines')
+    if paper is not None:
+        if paper.get('horizonal', True):
+            plot_lines(horizontal_lines, fig, 'b', paper=paper, label='Horizontal lines')
+        if paper.get('vertical', True):
+            plot_lines(vertical_lines, fig, 'c', paper=paper, label='Vertical lines')
+    else:
+        plot_lines(horizontal_lines, fig, 'b', label='Horizontal lines')
+        plot_lines(vertical_lines, fig, 'c', label='Vertical lines')
 
     plt.legend(loc='upper right')
 
