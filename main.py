@@ -12,7 +12,7 @@ from procedures.synthesis import synthesize_signals
 import settings as run_settings
 
 # Parameters
-name = 'anastasia'
+name = 'woodblock'
 settings = getattr(run_settings, name)
 load_any = True
 log = False
@@ -80,7 +80,7 @@ objects_folder = data_folder / Path('objects')
 
 results_folder = project_folder / Path('results')
 
-output_folder = results_folder / Path(name)
+output_folder = results_folder / Path(name + '_%dms_%dHz' % (TIME_RESOLUTION * 1000, FREQUENCY_PRECISION))
 
 arrays_folder = output_folder / Path('arrays')
 images_folder = output_folder / Path('images')

@@ -7,11 +7,17 @@ anastasia = {
     },
     'plot': {
         # Input
-        # 'input': {
-        #     'y_lim': (0, 12000),
-        #     'name': 'input',
-        #     'fig_size': (8, 4)
-        # },
+        'input': {
+            'y_lim': (0, 12000),
+            'name': 'input',
+            'fig_size': (6, 4)
+        },
+        'noise_zoom': {
+            'x_lim': (0.8, 0.97),
+            'y_lim': (1900, 2500),
+            'name': 'noise_zoom',
+            'fig_size': (4, 4)
+        },
         # 'closing': {
         #     'x_lim': (1., 1.5),
         #     'y_lim': (400, 1800),
@@ -117,18 +123,18 @@ anastasia = {
         # },
 
         # Output
-        'input_lines': {
-            'x_lim': (1.2, 1.9),
-            'y_lim': (250, 2500),
-            'fig_size': (4., 4.),
-            'name': 'input_lines',
-        },
-        'input_output': {
-            'x_lim': (1.2, 1.9),
-            'y_lim': (250, 2500),
-            'sharexy': False,
-            'name': 'input_output'
-        },
+        # 'input_lines': {
+        #     'x_lim': (1.2, 1.9),
+        #     'y_lim': (250, 2500),
+        #     'fig_size': (4., 4.),
+        #     'name': 'input_lines',
+        # },
+        # 'input_output': {
+        #     'x_lim': (1.2, 1.9),
+        #     'y_lim': (250, 2500),
+        #     'sharexy': False,
+        #     'name': 'input_output'
+        # },
         # 'input_denoised': {
         #     'y_lim': (0, 12000),
         #     'name': 'input_denoised'
@@ -153,7 +159,20 @@ luis_alonso = {
         'closing_time_width': 0.025,
         'closing_frequency_width': 75,
     },
-    'plot': {},
+    'plot': {
+        'input': {
+            'name': 'input',
+        },
+        'input_noise': {
+            'name': 'input_noise'
+        },
+        'input_sinusoids': {
+            'name': 'input_sinusoids'
+        },
+        'input_transient': {
+            'name': 'input_transient'
+        },
+    },
 }
 
 flute_bach = {
@@ -179,6 +198,36 @@ partita_b_minor = {
 violin_vibrato = {
     'start': 0.,
     'end': 2.,
+    'parameters': {
+        'closing_time_width': 0.025,
+        'closing_frequency_width': 75,
+    },
+    'plot': {},
+}
+
+marimba = {
+    'start': 0.,
+    'end': 4.,
+    'parameters': {
+        'closing_time_width': 0.025,
+        'closing_frequency_width': 75,
+    },
+    'plot': {},
+}
+
+piano = {
+    'start': 0.,
+    'end': 4.,
+    'parameters': {
+        'closing_time_width': 0.025,
+        'closing_frequency_width': 75,
+    },
+    'plot': {},
+}
+
+woodblock = {
+    'start': 0.,
+    'end': 4.,
     'parameters': {
         'closing_time_width': 0.025,
         'closing_frequency_width': 75,

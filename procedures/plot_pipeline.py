@@ -7,8 +7,6 @@ def plot_single(spectrogram, name, title, images_folder, v_min=MIN_DB, v_max=0, 
     fig = plot_stft(spectrogram.cpu().numpy(), v_min=v_min, v_max=v_max, c_map=c_map, title=title,
                     fig_size=paper.get('fig_size', (6., 4.)) if paper is not None else (6., 4.))
 
-    fig.savefig(images_folder / (name + '.pdf'), dpi=300)
-
     if paper is not None:
         from core.parameters import TIME_RESOLUTION, FREQUENCY_PRECISION
         if paper.get('x_lim', None) is not None:
@@ -16,6 +14,8 @@ def plot_single(spectrogram, name, title, images_folder, v_min=MIN_DB, v_max=0, 
         if paper.get('y_lim', None) is not None:
             fig.axes[0].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
         fig.savefig(images_folder / (paper['name'] + '.pdf'), dpi=300)
+    else:
+        fig.savefig(images_folder / (name + '.pdf'), dpi=300)
 
     return fig
 
@@ -115,6 +115,12 @@ def plot_input(spectrograms, images_folder, settings):
         plot_single(spectrograms['input'],
                     'input', 'Input', images_folder,
                     paper=settings['input'])
+
+    # Noise zoom
+    if settings.get('noise_zoom', None) is not None:
+        plot_single(spectrograms['input'],
+                    'noise_zoom', 'Noise zoom', images_folder,
+                    paper=settings['noise_zoom'])
 
     # Closing spectrogram
     if settings.get('closing', None) is not None:
