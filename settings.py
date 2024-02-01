@@ -49,7 +49,7 @@ anastasia = {
         'vertical_thin': {
             'x_lim': (1.6, 1.9),
             'y_lim': (850, 2200),
-            'sharexy': False,
+            # 'sharexy': False,
             'name': 'vertical_thin'
         },
         'vertical_top_hat': {

@@ -20,9 +20,9 @@ log = False
 components = {
     'input': True,
     'noise': True,
-    'sinusoids': False,
-    'transient': False,
-    'output': False,
+    'sinusoids': True,
+    'transient': True,
+    'output': True,
     'denoised': False,
 }
 

@@ -1,8 +1,9 @@
 from core.processing import *
-from .io import load_or_compute
+from .io import load_or_compute, try_to_load_pickle
 
 
-def apply_morphology_input(spectrograms, arrays_folder, load, parameters):
+def apply_morphology_input(spectrograms, paths, load, parameters):
+    arrays_folder = paths['arrays_folder']
     spectrogram = spectrograms['input']
 
     print('\nMorphology - Input')
@@ -21,8 +22,14 @@ def apply_morphology_input(spectrograms, arrays_folder, load, parameters):
     spectrograms['reconstruction_erosion'] = spectrogram_reconstruction_erosion
 
 
-def apply_morphology_noise(spectrograms, arrays_folder, load, parameters):
+def apply_morphology_noise(spectrograms, paths, load, parameters):
     print('\nMorphology - Noise')
+
+    arrays_folder = paths['arrays_folder']
+
+    if spectrograms.get('reconstruction_erosion', None) is None:
+        path = arrays_folder / 'reconstruction_erosion.pickle'
+        spectrograms['reconstruction_erosion'] = try_to_load_pickle(path, name='reconstruction_erosion')
 
     # Opening for get noise component
     spectrogram_opening = load_or_compute('opening', arrays_folder, load,
@@ -31,9 +38,15 @@ def apply_morphology_noise(spectrograms, arrays_folder, load, parameters):
     spectrograms['opening'] = spectrogram_opening
 
 
-def apply_morphology_sinusoids(spectrograms, arrays_folder, load):
+def apply_morphology_sinusoids(spectrograms, paths, load):
+    arrays_folder = paths['arrays_folder']
+
     # Sinusoids
     print('\nMorphology - Sinusoids')
+
+    if spectrograms.get('reconstruction_erosion', None) is None:
+        path = paths['arrays_folder'] / 'reconstruction_erosion.pickle'
+        spectrograms['reconstruction_erosion'] = try_to_load_pickle(path, name='reconstruction_erosion')
 
     # Vertical Thinning
     spectrogram_vertical_thin = load_or_compute('vertical_thin', arrays_folder, load,
@@ -60,7 +73,12 @@ def apply_morphology_sinusoids(spectrograms, arrays_folder, load):
     spectrograms['horizontal_filtered'] = spectrogram_horizontal_filtered
 
 
-def apply_morphology_transient(spectrograms, arrays_folder, load):
+def apply_morphology_transient(spectrograms, paths, load):
+    arrays_folder = paths['arrays_folder']
+
+    if spectrograms.get('reconstruction_erosion', None) is None:
+        path = paths['arrays_folder'] / 'reconstruction_erosion.pickle'
+        spectrograms['reconstruction_erosion'] = try_to_load_pickle(path, name='reconstruction_erosion')
     spectrogram_reconstruction_erosion = spectrograms['reconstruction_erosion']
 
     # Transient
@@ -93,10 +111,10 @@ def apply_morphology_transient(spectrograms, arrays_folder, load):
 
 def apply_morphology(spectrograms, paths, load, components, parameters):
     if components['input']:
-        apply_morphology_input(spectrograms, paths['arrays_folder'], load, parameters)
+        apply_morphology_input(spectrograms, paths, load, parameters)
     if components['noise']:
-        apply_morphology_noise(spectrograms, paths['arrays_folder'], load, parameters)
+        apply_morphology_noise(spectrograms, paths, load, parameters)
     if components['sinusoids']:
-        apply_morphology_sinusoids(spectrograms, paths['arrays_folder'], load)
+        apply_morphology_sinusoids(spectrograms, paths, load)
     if components['transient']:
-        apply_morphology_transient(spectrograms, paths['arrays_folder'], load)
+        apply_morphology_transient(spectrograms, paths, load)

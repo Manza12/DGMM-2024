@@ -72,7 +72,7 @@ def synthesize_sinusoids(lines_h, fs=FS, verbose=True):
 
         idx_0 = int(times.min() * fs)
         idx_1 = idx_0 + s.size
-        signal_sinusoids[idx_0:idx_1] += s
+        signal_sinusoids[idx_0:idx_1] += s[:signal_sinusoids[idx_0:idx_1].size]
 
     if verbose:
         print('Time to synthesize sinusoids: %.3f s' % (time.time() - start))

@@ -17,8 +17,8 @@ def greyscale_hit_or_miss(input_image: np.ndarray,
                           str_el_out: np.ndarray
                           ) -> np.ndarray:
     str_el_dil = np.flip(str_el_out, axis=[0, 1])
-    e = morph.grey_erosion(input_image, structure=str_el_in)
-    d = morph.grey_dilation(input_image, structure=str_el_dil)
+    e = morph.grey_erosion(input_image, footprint=str_el_in)
+    d = morph.grey_dilation(input_image, footprint=str_el_dil)
     d[np.isinf(d)] = np.min(d[np.logical_not(np.isinf(d))])
 
     output = input_image - d

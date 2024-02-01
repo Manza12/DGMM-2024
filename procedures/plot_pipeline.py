@@ -1,6 +1,7 @@
 from core import *
 from core.plot import plot_stft, plot_lines, plot_two_spectrogram
 from core.parameters import MIN_DB
+from procedures.io import try_to_load_pickle
 
 
 def plot_single(spectrogram, name, title, images_folder, v_min=MIN_DB, v_max=0, c_map='afmhot', paper=None):
@@ -115,7 +116,9 @@ def plot_input_lines_filtered(lines, filtered_lines, spectrogram, images_folder,
         fig.savefig(images_folder / (paper['name'] + '.pdf'), dpi=dpi)
 
 
-def plot_input(spectrograms, images_folder, settings):
+def plot_input(spectrograms, paths, settings):
+    images_folder = paths['images_folder']
+
     # Input spectrogram
     if settings.get('input', None) is not None:
         plot_single(spectrograms['input'],
@@ -147,7 +150,9 @@ def plot_input(spectrograms, images_folder, settings):
     #                  paper=settings['erosion'])
 
 
-def plot_noise(spectrograms, images_folder, settings):
+def plot_noise(spectrograms, paths, settings):
+    images_folder = paths['images_folder']
+
     # Opening spectrogram
     if settings.get('opening', None) is not None:
         plot_compare(spectrograms['reconstruction_erosion'], spectrograms['opening'],
@@ -170,7 +175,13 @@ def plot_noise(spectrograms, images_folder, settings):
                      paper=settings['input_noise'])
 
 
-def plot_sinusoids(lines, spectrograms, images_folder, settings):
+def plot_sinusoids(lines, spectrograms, paths, settings):
+    images_folder = paths['images_folder']
+
+    if spectrograms.get('reconstruction_erosion', None) is None:
+        path = paths['arrays_folder'] / 'reconstruction_erosion.pickle'
+        spectrograms['reconstruction_erosion'] = try_to_load_pickle(path, name='reconstruction_erosion')
+
     # Vertical thinning spectrogram
     if settings.get('vertical_thin', None) is not None:
         plot_compare(spectrograms['reconstruction_erosion'], spectrograms['vertical_thin'],
@@ -211,7 +222,9 @@ def plot_sinusoids(lines, spectrograms, images_folder, settings):
                      paper=settings['input_sinusoids'])
 
 
-def plot_transient(lines, spectrograms, images_folder, settings):
+def plot_transient(lines, spectrograms, paths, settings):
+    images_folder = paths['images_folder']
+
     # Horizontal thinning spectrogram
     if settings.get('horizontal_thin', None) is not None:
         plot_compare(spectrograms['reconstruction_erosion'], spectrograms['horizontal_thin'],
@@ -256,7 +269,17 @@ def plot_transient(lines, spectrograms, images_folder, settings):
                      paper=settings['input_transient'])
 
 
-def plot_output(spectrograms, lines, images_folder, settings):
+def plot_output(spectrograms, lines, paths, settings):
+    images_folder = paths['images_folder']
+
+    if lines.get('sinusoids', None) is None:
+        path = paths['arrays_folder'] / 'lines_sinusoids.pickle'
+        lines['sinusoids'] = try_to_load_pickle(path, name='lines_sinusoids')
+
+    if lines.get('transient', None) is None:
+        path = paths['arrays_folder'] / 'lines_transient.pickle'
+        lines['transient'] = try_to_load_pickle(path, name='lines_transient')
+
     # Input - lines
     if settings.get('input_lines', None) is not None:
         plot_input_lines(lines['sinusoids'], lines['transient'], spectrograms['input'],
@@ -280,14 +303,14 @@ def plot_output(spectrograms, lines, images_folder, settings):
 
 def plot_all(lines, spectrograms, components, paths, settings):
     if components['input']:
-        plot_input(spectrograms, paths['images_folder'], settings['plot'])
+        plot_input(spectrograms, paths, settings['plot'])
     if components['noise']:
-        plot_noise(spectrograms, paths['images_folder'], settings['plot'])
+        plot_noise(spectrograms, paths, settings['plot'])
     if components['sinusoids']:
-        plot_sinusoids(lines, spectrograms, paths['images_folder'], settings['plot'])
+        plot_sinusoids(lines, spectrograms, paths, settings['plot'])
     if components['transient']:
-        plot_transient(lines, spectrograms, paths['images_folder'], settings['plot'])
+        plot_transient(lines, spectrograms, paths, settings['plot'])
     if components['output']:
-        plot_output(spectrograms, lines, paths['images_folder'], settings['plot'])
+        plot_output(spectrograms, lines, paths, settings['plot'])
 
     plt.show()
