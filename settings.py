@@ -152,6 +152,8 @@ toccata_fuga = {
     'plot': {},
 }
 
+gong = {}
+
 luis_alonso = {
     'start': 70.,
     'end': 74.0,
@@ -244,6 +246,20 @@ piano = {
             # 'vertical': False,
             'name': 'input_lines',
         },
+        'input_output': {
+            'x_lim': (0.4, 0.8),
+            'y_lim': (0, 5000),
+            'fig_size': (8., 4.),
+            'sharexy': True,
+            'name': 'input_output'
+        },
+        'input_transient': {
+            'x_lim': (0.4, 0.8),
+            'y_lim': (0, 5000),
+            'fig_size': (8., 4.),
+            'sharexy': True,
+            'name': 'input_output'
+        }
     },
 }
 

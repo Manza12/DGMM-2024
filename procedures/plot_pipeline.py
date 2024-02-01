@@ -48,8 +48,8 @@ def plot_compare(spectrogram_1, spectrogram_2, name, title, images_folder,
         dpi = 300
 
         x_border = fig_size[0] / 2
-        bbox_0 = mpl.transforms.Bbox([[0., 0.], [x_border, fig_size[1]]])
-        bbox_1 = mpl.transforms.Bbox([[x_border, 0.], fig_size])
+        bbox_0 = transforms.Bbox([[0., 0.], [x_border, fig_size[1]]])
+        bbox_1 = transforms.Bbox([[x_border, 0.], fig_size])
 
         split_folder = images_folder / 'split'
         split_folder.mkdir(parents=True, exist_ok=True)
@@ -142,12 +142,6 @@ def plot_input(spectrograms, paths, settings):
         plot_compare(spectrograms['closing'], spectrograms['reconstruction_erosion'],
                      'reconstruction_erosion', 'Reconstruction by erosion', images_folder,
                      paper=settings['reconstruction_erosion'])
-
-    # # Erosion spectrogram
-    # if settings.get('erosion', None) is not None:
-    #     plot_compare(spectrograms['reconstruction_erosion'], spectrograms['erosion'],
-    #                  'erosion', 'Erosion', images_folder,
-    #                  paper=settings['erosion'])
 
 
 def plot_noise(spectrograms, paths, settings):
@@ -303,14 +297,14 @@ def plot_output(spectrograms, lines, paths, settings):
 
 def plot_all(lines, spectrograms, components, paths, settings):
     if components['input']:
-        plot_input(spectrograms, paths, settings['plot'])
+        plot_input(spectrograms, paths, settings.get('plot', {}))
     if components['noise']:
-        plot_noise(spectrograms, paths, settings['plot'])
+        plot_noise(spectrograms, paths, settings.get('plot', {}))
     if components['sinusoids']:
-        plot_sinusoids(lines, spectrograms, paths, settings['plot'])
+        plot_sinusoids(lines, spectrograms, paths, settings.get('plot', {}))
     if components['transient']:
-        plot_transient(lines, spectrograms, paths, settings['plot'])
+        plot_transient(lines, spectrograms, paths, settings.get('plot', {}))
     if components['output']:
-        plot_output(spectrograms, lines, paths, settings['plot'])
+        plot_output(spectrograms, lines, paths, settings.get('plot', {}))
 
     plt.show()

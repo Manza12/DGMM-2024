@@ -2,16 +2,6 @@ from . import *
 from .templates import *
 
 
-def erosion_geodesic(marker: np.ndarray, condition: np.ndarray):
-    e = morph.grey_erosion(marker, 3)
-    return np.maximum(condition, e)
-
-
-def dilation_geodesic(marker: np.ndarray, condition: np.ndarray):
-    d = morph.grey_dilation(marker, 3)
-    return np.minimum(condition, d)
-
-
 def greyscale_hit_or_miss(input_image: np.ndarray,
                           str_el_in: np.ndarray,
                           str_el_out: np.ndarray

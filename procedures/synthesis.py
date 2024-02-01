@@ -21,7 +21,7 @@ def synthesize_noise_signal(signals, spectrograms, paths, load):
     filtered_noise = load_or_compute('filtered_noise', paths['audio_folder'], load,
                                      lambda: synthesize_noise_mask(white_noise_stft, spectrograms['opening'],
                                                                    verbose=True),
-                                     extension='.wav')
+                                     extension='.wav', save=False)
 
     signals['white_noise'] = white_noise
     signals['filtered_noise'] = filtered_noise
@@ -43,7 +43,8 @@ def synthesize_sinusoids_signal(lines, signals, spectrograms, paths, load):
     lines['filtered_sinusoids'] = filtered_lines
 
     sinusoids = load_or_compute('sinusoids', paths['audio_folder'], load,
-                                lambda: synthesize_sinusoids(filtered_lines), extension='.wav')
+                                lambda: synthesize_sinusoids(filtered_lines),
+                                extension='.wav', save=False)
 
     signals['sinusoids'] = sinusoids
 
@@ -63,7 +64,8 @@ def synthesize_transient_signal(lines, signals, spectrograms, paths, load):
 
     duration = get_duration(signals['input'])
     transient = load_or_compute('transient', paths['audio_folder'], load,
-                                lambda: synthesize_transient(filtered_lines, duration), extension='.wav')
+                                lambda: synthesize_transient(filtered_lines, duration),
+                                extension='.wav', save=False)
 
     signals['transient'] = transient
 

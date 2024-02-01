@@ -12,7 +12,7 @@ from procedures.synthesis import synthesize_signals
 import settings as run_settings
 
 # Parameters
-name = 'anastasia'
+name = 'piano'
 settings = getattr(run_settings, name)
 load_any = True
 log = False
@@ -114,8 +114,8 @@ print('Getting input...')
 
 paths['file_path'] = paths['audio_folder'] / (name + '.wav')
 
-start = settings['start']
-end = settings['end']
+start = settings.get('start', 0.)
+end = settings.get('end', None)
 x = take_excerpt(paths['file_path'], start, end)
 
 # Apply STFT layer
@@ -123,7 +123,10 @@ spectrogram = load_or_compute('spectrogram', paths['arrays_folder'], load, lambd
 
 # Morphology
 spectrograms = {'input': spectrogram}
-parameters = settings['parameters']
+parameters = settings.get('parameters', {
+        'closing_time_width': 0.025,
+        'closing_frequency_width': 75,
+    })
 if operations['processing']:
     print('\nProcessing...')
     apply_morphology(spectrograms, paths, load, components, parameters)

@@ -2,10 +2,15 @@ from core import *
 from core.parameters import FS
 
 
-def take_excerpt(file_path: Path, start: float, end: float):
+def take_excerpt(file_path: Path, start: float, end: Optional[float]):
     data = read_wav(file_path)
     n_start = int(start * FS)
-    n_end = int(end * FS)
+
+    if end is None:
+        n_end = len(data)
+    else:
+        n_end = int(end * FS)
+
     return data[n_start: n_end]
 
 
@@ -59,7 +64,7 @@ def try_to_read_wav(file_path):
     return data
 
 
-def load_or_compute(name, folder, load, function, extension='.pickle', verbose=True):
+def load_or_compute(name, folder, load, function, extension='.pickle', verbose=True, save=True):
     path = folder / (name + extension)
 
     if load.get(name, False):
@@ -74,7 +79,8 @@ def load_or_compute(name, folder, load, function, extension='.pickle', verbose=T
 
     if not load.get(name, False) or result is None:
         result = function()
-        save_pickle(path, result)
+        if save:
+            save_pickle(path, result)
 
     return result
 
@@ -88,9 +94,9 @@ def write_signals(signals, paths, components):
         write_wav(input_path, x)
 
     if components['noise']:
-        white_noise = signals['white_noise']
-        white_noise_path = audio_folder / 'white_noise.wav'
-        write_wav(white_noise_path, white_noise)
+        # white_noise = signals['white_noise']
+        # white_noise_path = audio_folder / 'white_noise.wav'
+        # write_wav(white_noise_path, white_noise)
 
         filtered_noise = signals['filtered_noise']
         filtered_noise_path = audio_folder / 'filtered_noise.wav'
