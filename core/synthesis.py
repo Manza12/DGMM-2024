@@ -7,16 +7,20 @@ def synthesize_white_noise(n):
     return white_noise
 
 
-def synthesize_noise_mask(white_noise_stft, mask, stft_layer, verbose=False):
+def synthesize_noise_mask(white_noise_stft, mask, verbose=False):
     start = time.time()
 
     # Filter spectrogram
-    mask_amplitude = from_db(mask).unsqueeze(-1)
-    # mask_amplitude *= torch.sum(stft_layer.window_mask)
-    filtered_noise_stft = mask_amplitude * white_noise_stft[:, :mask_amplitude.shape[1], :]
+    mask_amplitude = from_db(mask)
+    filtered_noise_stft = mask_amplitude * white_noise_stft
 
     # Synthesize
-    filtered_noise = stft_layer.inverse(filtered_noise_stft.unsqueeze(0))[0].cpu().numpy()
+    _, filtered_noise = sig.istft(filtered_noise_stft,
+                                  fs=FS,
+                                  window=WINDOW,
+                                  nperseg=WIN_LENGTH,
+                                  noverlap=N_OVERLAP,
+                                  nfft=N_FFT)
 
     if verbose:
         print('Time to synthesize noise: %.3f s' % (time.time() - start))

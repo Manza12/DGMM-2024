@@ -13,12 +13,11 @@ def apply_closing(spectrogram, parameters, verbose=True):
     shape = (int(np.ceil(frequency_width / FREQUENCY_PRECISION)),
              int(np.ceil(time_width / TIME_RESOLUTION)))
 
-    str_el = torch.ones(shape).to(DEVICE)
+    str_el = np.ones(shape, dtype=bool)
 
-    spectrogram_closed = greyscale.closing(spectrogram, str_el, border='g')
+    spectrogram_closed = morph.grey_closing(spectrogram, footprint=str_el)
 
     if verbose:
-        torch.cuda.synchronize(DEVICE)
         print('Time to apply closing: %.3f seconds' % (time.time() - start))
 
     return spectrogram_closed
@@ -27,11 +26,9 @@ def apply_closing(spectrogram, parameters, verbose=True):
 def apply_reconstruction_by_erosion(marker, spectrogram, verbose=True):
     start = time.time()
 
-    spectrogram_filled = reconstruction_erosion(marker, spectrogram, verbose=verbose,
-                                                iterations=RECONSTRUCTION_EROSION_ITERATIONS)
+    spectrogram_filled = reconstruction.reconstruction(marker, spectrogram, method='erosion')
 
     if verbose:
-        torch.cuda.synchronize(DEVICE)
         print('Time to apply reconstruction by erosion: %.3f seconds' % (time.time() - start))
 
     return spectrogram_filled
@@ -41,13 +38,11 @@ def apply_erosion(spectrogram):
     start = time.time()
 
     window = win.get_window(WINDOW, int(np.ceil(WIN_LENGTH / FS / TIME_RESOLUTION)))
-    window_db = to_db(window, 'numpy')
-    str_el = torch.from_numpy(window_db).to(torch.float32).to(DEVICE)
+    str_el = to_db(window)
     str_el = str_el.view(1, -1)
 
-    spectrogram_eroded = greyscale.erosion(spectrogram, str_el, border='g')
+    spectrogram_eroded = morph.grey_erosion(spectrogram, footprint=str_el)
 
-    torch.cuda.synchronize(DEVICE)
     print('Time to apply erosion: %.3f seconds' % (time.time() - start))
 
     return spectrogram_eroded
@@ -63,12 +58,11 @@ def apply_opening(spectrogram, parameters, verbose=True):
     shape = (int(np.ceil(frequency_width / FREQUENCY_PRECISION)),
              int(np.ceil(time_width / TIME_RESOLUTION)))
 
-    str_el = torch.zeros(shape).to(DEVICE)
+    str_el = np.ones(shape)
 
-    spectrogram_opened = greyscale.opening(spectrogram, str_el, border='g')
+    spectrogram_opened = morph.grey_opening(spectrogram, footprint=str_el)
 
     if verbose:
-        torch.cuda.synchronize(DEVICE)
         print('Time to apply opening: %.3f seconds' % (time.time() - start))
 
     return spectrogram_opened
@@ -84,7 +78,6 @@ def apply_vertical_thinning(spectrogram, verbose=True):
                                              iterations=VERTICAL_THINNING_ITERATIONS)
 
     if verbose:
-        torch.cuda.synchronize(DEVICE)
         print('Time to apply vertical thinning: %.3f seconds' % (time.time() - start))
 
     return spectrogram_thinned
@@ -95,12 +88,11 @@ def apply_vertical_top_hat(spectrogram, verbose=True):
 
     shape = (3, 1)
 
-    str_el = torch.zeros(shape).to(DEVICE)
+    str_el = np.ones(shape)
 
-    spectrogram_top_hat = spectrogram - greyscale.opening(spectrogram, str_el)
+    spectrogram_top_hat = spectrogram - morph.grey_opening(spectrogram, footprint=str_el)
 
     if verbose:
-        torch.cuda.synchronize(DEVICE)
         print('Time to apply vertical top-hat: %.3f seconds' % (time.time() - start))
 
     return spectrogram_top_hat
@@ -110,11 +102,10 @@ def apply_top_hat_threshold(spectrogram, spectrogram_top_hat, threshold=TOP_HAT_
                             verbose=True):
     start = time.time()
 
-    spectrogram_threshold = torch.clone(spectrogram)
+    spectrogram_threshold = np.copy(spectrogram)
     spectrogram_threshold[spectrogram_top_hat <= threshold] = min_db
 
     if verbose:
-        torch.cuda.synchronize(DEVICE)
         print('Time to apply top-hat threshold: %.3f seconds' % (time.time() - start))
 
     return spectrogram_threshold
@@ -129,10 +120,9 @@ def remove_small_horizontal_lines(spectrogram, verbose=True):
     iterations = min_length_bins // 2
 
     spectrogram_trimming = greyscale_trimming(spectrogram, iterations, 'h', verbose=verbose)
-    spectrogram_reconstruction = reconstruction_dilation(spectrogram_trimming, spectrogram)
+    spectrogram_reconstruction = reconstruction.reconstruction(spectrogram_trimming, spectrogram)
 
     if verbose:
-        torch.cuda.synchronize(DEVICE)
         print('Time to remove small horizontal lines: %.3f seconds' % (time.time() - start))
 
     return spectrogram_reconstruction
@@ -147,7 +137,6 @@ def apply_horizontal_thinning(spectrogram, verbose=True):
                                              iterations=HORIZONTAL_THINNING_ITERATIONS)
 
     if verbose:
-        torch.cuda.synchronize(DEVICE)
         print('Time to apply horizontal thinning: %.3f seconds' % (time.time() - start))
 
     return spectrogram_thinned
@@ -158,12 +147,11 @@ def apply_horizontal_top_hat(spectrogram, verbose=True):
 
     shape = (1, 3)
 
-    str_el = torch.zeros(shape).to(DEVICE)
+    str_el = np.ones(shape)
 
-    spectrogram_top_hat = spectrogram - greyscale.opening(spectrogram, str_el)
+    spectrogram_top_hat = spectrogram - morph.grey_opening(spectrogram, footprint=str_el)
 
     if verbose:
-        torch.cuda.synchronize(DEVICE)
         print('Time to apply horizontal top-hat: %.3f seconds' % (time.time() - start))
 
     return spectrogram_top_hat
@@ -178,16 +166,15 @@ def remove_small_vertical_lines(spectrogram, verbose=True):
     iterations = min_length_bins // 2
 
     spectrogram_trimming = greyscale_trimming(spectrogram, iterations, 'v', verbose=verbose)
-    spectrogram_reconstruction = reconstruction_dilation(spectrogram_trimming, spectrogram)
+    spectrogram_reconstruction = reconstruction.reconstruction(spectrogram_trimming, spectrogram)
 
     if verbose:
-        torch.cuda.synchronize(DEVICE)
         print('Time to remove small vertical lines: %.3f seconds' % (time.time() - start))
 
     return spectrogram_reconstruction
 
 
-def get_lines(spectrogram: torch.Tensor, sort_by, min_db=MIN_DB, verbose=True, verbose_it_step=100):
+def get_lines(spectrogram: np.ndarray, sort_by, min_db=MIN_DB, verbose=True, verbose_it_step=100):
     start = time.time()
 
     if verbose:
@@ -195,8 +182,7 @@ def get_lines(spectrogram: torch.Tensor, sort_by, min_db=MIN_DB, verbose=True, v
 
     structure = np.ones((3, 3))
 
-    labels, n_labels = image.label(torch.greater(spectrogram, min_db).cpu().numpy(), structure=structure)
-    labels_tensor = torch.tensor(labels, device=DEVICE)
+    labels, n_labels = image.label(np.greater(spectrogram, min_db), structure=structure)
 
     if sort_by == 'time':
         min_length_bins = int(MIN_LENGTH_SINUSOIDS / TIME_RESOLUTION)
@@ -207,8 +193,8 @@ def get_lines(spectrogram: torch.Tensor, sort_by, min_db=MIN_DB, verbose=True, v
 
     lines = []
     for i in range(1, n_labels + 1):
-        values = torch.eq(labels_tensor, i)
-        idxs = torch.argwhere(values)
+        values = np.equal(labels, i)
+        idxs = np.argwhere(values)
 
         if idxs.shape[0] < min_length_bins:
             continue
@@ -222,16 +208,16 @@ def get_lines(spectrogram: torch.Tensor, sort_by, min_db=MIN_DB, verbose=True, v
             raise ValueError('Parameter sort_by must be either "time" or "frequency"')
 
         ampli_db = spectrogram[idxs_sort[:, 0], idxs_sort[:, 1]]
-        if torch.max(ampli_db) < MIN_AMPLI_DB:
+        if np.max(ampli_db) < MIN_AMPLI_DB:
             continue
 
         times = idxs_sort[:, 1] * TIME_RESOLUTION
         freqs = idxs_sort[:, 0] * FREQUENCY_PRECISION
         ampli = from_db(ampli_db)
 
-        line = torch.stack((times, freqs, ampli), dim=1)
+        line = np.stack((times, freqs, ampli), axis=1)
 
-        lines.append(line.cpu().numpy())
+        lines.append(line)
 
         if verbose and i % verbose_it_step == 0:
             print('Iteration %d / %d' % (i, n_labels))
@@ -261,12 +247,12 @@ def filter_lines(lines, axis):
 
 
 def get_window_spread(w, drop, nfft, fs=1):
-    w_db = to_db(w / w.max(), library='numpy')
+    w_db = to_db(w / w.max())
     t = (np.arange(w.size) - w.size // 2) / fs
     t_max = 2 * np.max(np.abs(t[w_db >= w_db.max() - drop]))
 
     W = np.fft.fft(w, nfft)
-    W_db = to_db(W, library='numpy')
+    W_db = to_db(W)
     f = np.fft.fftfreq(nfft, 1 / fs)
     f_max = 2 * np.max(np.abs(f[W_db >= W_db.max() - drop]))
 

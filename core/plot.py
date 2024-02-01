@@ -162,8 +162,14 @@ def plot_two_spectrogram(spectrogram_1: np.ndarray, spectrogram_2: np.ndarray,
     if v_max_2 is None:
         v_max_2 = np.max(spectrogram_2)
 
-    image_1 = axs[0].imshow(spectrogram_1, cmap=c_map_1, vmin=v_min_1, vmax=v_max_1, aspect='auto', origin='lower')
-    image_2 = axs[1].imshow(spectrogram_2, cmap=c_map_2, vmin=v_min_2, vmax=v_max_2, aspect='auto', origin='lower')
+    if spectrogram_1.size != 0:
+        image_1 = axs[0].imshow(spectrogram_1, cmap=c_map_1, vmin=v_min_1, vmax=v_max_1, aspect='auto', origin='lower')
+    else:
+        image_1 = None
+    if spectrogram_2.size != 0:
+        image_2 = axs[1].imshow(spectrogram_2, cmap=c_map_2, vmin=v_min_2, vmax=v_max_2, aspect='auto', origin='lower')
+    else:
+        image_2 = None
 
     # Freq axis
     axs[0].yaxis.set_major_formatter(tick.FuncFormatter(lambda x, pos: format_freq(x, pos, frequency_vector)))
@@ -180,9 +186,9 @@ def plot_two_spectrogram(spectrogram_1: np.ndarray, spectrogram_2: np.ndarray,
     axs[1].set_ylabel('Frequency (Hz)')
 
     # Colorbar
-    if cb_1:
+    if cb_1 and image_1 is not None:
         fig.colorbar(image_1, ax=axs[0], format="%2.0f dB")
-    if cb_2:
+    if cb_2 and image_2 is not None:
         fig.colorbar(image_2, ax=axs[1], format="%2.0f dB")
 
     plt.tight_layout()

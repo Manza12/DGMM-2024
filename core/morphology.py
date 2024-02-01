@@ -2,163 +2,71 @@ from . import *
 from .templates import *
 
 
-def erosion_geodesic(marker: torch.Tensor, condition: torch.Tensor):
-    e = greyscale.erosion(marker, torch.zeros(3, 3, dtype=marker.dtype, device=marker.device))
-    return torch.maximum(condition, e)
+def erosion_geodesic(marker: np.ndarray, condition: np.ndarray):
+    e = morph.grey_erosion(marker, 3)
+    return np.maximum(condition, e)
 
 
-def dilation_geodesic(marker: torch.Tensor, condition: torch.Tensor):
-    d = greyscale.dilation(marker, torch.zeros(3, 3, dtype=marker.dtype, device=marker.device))
-    return torch.minimum(condition, d)
+def dilation_geodesic(marker: np.ndarray, condition: np.ndarray):
+    d = morph.grey_dilation(marker, 3)
+    return np.minimum(condition, d)
 
 
-def reconstruction_erosion(marker: Optional[torch.Tensor], condition: torch.Tensor, iterations: Optional[int] = None,
-                           verbose=False, verbose_it_step=100):
-
-    if verbose:
-        print('Starting reconstruction by erosion...')
-
-    if marker is None:
-        marker = torch.zeros_like(condition)
-
-    x_recons = torch.clone(marker)
-
-    count = 0
-    while True:
-        x_out = erosion_geodesic(x_recons, condition)
-
-        if torch.all(torch.eq(x_out, x_recons)):
-            break
-        else:
-            x_recons = x_out
-        count += 1
-
-        if verbose:
-            if count % verbose_it_step == 0:
-                print("it:", count)
-
-        if count == iterations:
-            break
-
-    if verbose:
-        if iterations is None:
-            print("Iterations needed for stability:", count)
-        else:
-            print("Iterations performed:", count)
-
-    return x_recons
-
-
-def reconstruction_dilation(marker: Optional[torch.Tensor], condition: torch.Tensor, iterations: Optional[int] = None,
-                            verbose=False, verbose_it_step=10):
-
-    if marker is None:
-        from .parameters import MIN_DB
-        marker = torch.zeros_like(condition) - MIN_DB
-        marker[condition == torch.max(condition)] = torch.max(condition)
-
-    x_recons = torch.clone(marker)
-
-    count = 0
-    while True:
-        x_out = dilation_geodesic(x_recons, condition)
-
-        if torch.all(torch.eq(x_out, x_recons)):
-            break
-        else:
-            x_recons = x_out
-        count += 1
-
-        if verbose:
-            if count % verbose_it_step == 0:
-                print("it:", count)
-                from .plot import plot_two_spectrogram
-                from .processing import MIN_DB
-                plot_two_spectrogram(marker.cpu().numpy(), x_out.cpu().numpy(),
-                                     v_min_1=MIN_DB, v_min_2=MIN_DB, v_max_1=0, v_max_2=0, c_map_1='Greys',
-                                     c_map_2='Greys')
-                plt.show()
-
-        if count == iterations:
-            break
-
-    if verbose:
-        print("Iterations needed for stability:", count)
-
-    return x_recons
-
-
-def greyscale_hit_or_miss(input_image: torch.Tensor,
-                          str_el_in: torch.Tensor,
-                          str_el_out: torch.Tensor,
-                          origin_in: Optional[Tuple[int, int]] = None,
-                          origin_out: Optional[Tuple[int, int]] = None,
-                          border: str = 'g',
-                          alpha=0) -> torch.Tensor:
-    str_el_dil = torch.flip(str_el_out, dims=[0, 1])
-    if origin_out is not None:
-        origin_out = (str_el_dil.shape[0] - origin_out[0] - 1, str_el_dil.shape[1] - origin_out[1] - 1)
-    e = greyscale.erosion(input_image, torch.zeros_like(str_el_in).to(input_image.dtype), str_el_in, origin_in, border)
-    d = greyscale.dilation(input_image, torch.zeros_like(str_el_dil).to(input_image.dtype), str_el_dil, origin_out)
-    d[torch.isinf(d)] = torch.min(d[torch.logical_not(torch.isinf(d))])
+def greyscale_hit_or_miss(input_image: np.ndarray,
+                          str_el_in: np.ndarray,
+                          str_el_out: np.ndarray
+                          ) -> np.ndarray:
+    str_el_dil = np.flip(str_el_out, axis=[0, 1])
+    e = morph.grey_erosion(input_image, structure=str_el_in)
+    d = morph.grey_dilation(input_image, structure=str_el_dil)
+    d[np.isinf(d)] = np.min(d[np.logical_not(np.isinf(d))])
 
     output = input_image - d
-    is_simple = torch.logical_and(torch.greater_equal(e, input_image - alpha), torch.greater(input_image, d))
-    output[torch.logical_not(is_simple)] = 0
+    is_simple = np.logical_and(np.greater_equal(e, input_image), np.greater(input_image, d))
+    output[np.logical_not(is_simple)] = 0
 
     return output
 
 
-def binary_hit_or_miss(input_image: torch.Tensor,
-                       str_el_in: torch.Tensor,
-                       str_el_out: torch.Tensor,
-                       origin_in: Optional[Tuple[int, int]] = None,
-                       origin_out: Optional[Tuple[int, int]] = None,
-                       border: str = 'g') -> torch.Tensor:
-    e = binary.erosion(input_image, str_el_in, origin_in, border)
-    d = binary.erosion(~input_image, str_el_out, origin_out, border)
-    return torch.logical_and(e, d)
-
-
-def elementary_greyscale_sequential_thinning(x: torch.Tensor, direction: str = 'a', border='g', alpha=0):
+def elementary_greyscale_sequential_thinning(x: np.ndarray, direction: str = 'a'):
     if direction == 'h':
-        x_simple = greyscale_hit_or_miss(x, C_E, D_E, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x, C_E, D_E)
         x_thin = x - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_thin, C_W, D_W, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_thin, C_W, D_W)
         x_thin = x_thin - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_thin, C_NW, D_NW, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_thin, C_NW, D_NW)
         x_thin = x_thin - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_thin, C_SE, D_SE, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_thin, C_SE, D_SE)
         x_thin = x_thin - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_thin, C_NE, D_NE, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_thin, C_NE, D_NE)
         x_thin = x_thin - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_thin, C_SW, D_SW, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_thin, C_SW, D_SW)
         x_thin = x_thin - x_simple
 
         return x_thin
 
     elif direction == 'v':
-        x_simple = greyscale_hit_or_miss(x, C_N, D_N, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x, C_N, D_N)
         x_thin = x - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_thin, C_S, D_S, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_thin, C_S, D_S)
         x_thin = x_thin - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_thin, C_NE, D_NE, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_thin, C_NE, D_NE)
         x_thin = x_thin - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_thin, C_SW, D_SW, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_thin, C_SW, D_SW)
         x_thin = x_thin - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_thin, C_NW, D_NW, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_thin, C_NW, D_NW)
         x_thin = x_thin - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_thin, C_SE, D_SE, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_thin, C_SE, D_SE)
         x_thin = x_thin - x_simple
 
         return x_thin
@@ -166,14 +74,14 @@ def elementary_greyscale_sequential_thinning(x: torch.Tensor, direction: str = '
         raise ValueError("Parameter 'direction' must be 'h' or 'v'")
 
 
-def greyscale_thinning(input_image: torch.Tensor, iterations: Optional[int] = None, direction: str = 'a',
-                       verbose=False, verbose_it_step=10, alpha=0):
-    x_thin = torch.clone(input_image)
+def greyscale_thinning(input_image: np.ndarray, iterations: Optional[int] = None, direction: str = 'a',
+                       verbose=False, verbose_it_step=10):
+    x_thin = np.copy(input_image)
     count = 0
     while True:
-        x_out = elementary_greyscale_sequential_thinning(x_thin, direction, alpha=alpha)
+        x_out = elementary_greyscale_sequential_thinning(x_thin, direction)
 
-        if torch.all(torch.eq(x_out, x_thin)):
+        if np.all(np.equal(x_out, x_thin)):
             break
         else:
             x_thin = x_out
@@ -195,21 +103,21 @@ def greyscale_thinning(input_image: torch.Tensor, iterations: Optional[int] = No
     return x_thin
 
 
-def elementary_greyscale_trimming(x: torch.Tensor, direction: str = 'a', border='g', alpha=0):
+def elementary_greyscale_trimming(x: np.ndarray, direction: str = 'a'):
     if direction == 'h':
-        x_simple = greyscale_hit_or_miss(x, C, D_E, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x, C, D_E)
         x_trim = x - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_trim, C, D_W, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_trim, C, D_W)
         x_trim = x_trim - x_simple
 
         return x_trim
 
     elif direction == 'v':
-        x_simple = greyscale_hit_or_miss(x, C, D_N, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x, C, D_N)
         x_trim = x - x_simple
 
-        x_simple = greyscale_hit_or_miss(x_trim, C, D_S, border=border, alpha=alpha)
+        x_simple = greyscale_hit_or_miss(x_trim, C, D_S)
         x_trim = x_trim - x_simple
 
         return x_trim
@@ -217,14 +125,14 @@ def elementary_greyscale_trimming(x: torch.Tensor, direction: str = 'a', border=
         raise ValueError("Parameter 'direction' must be 'h' or 'v'")
 
 
-def greyscale_trimming(input_image: torch.Tensor, iterations: Optional[int] = None, direction: str = 'a',
-                       verbose=False, verbose_it_step=10, alpha=0):
-    x_thin = torch.clone(input_image)
+def greyscale_trimming(input_image: np.ndarray, iterations: Optional[int] = None, direction: str = 'a',
+                       verbose=False, verbose_it_step=10):
+    x_thin = np.copy(input_image)
     count = 0
     while True:
-        x_out = elementary_greyscale_trimming(x_thin, direction, alpha=alpha)
+        x_out = elementary_greyscale_trimming(x_thin, direction)
 
-        if torch.all(torch.eq(x_out, x_thin)):
+        if np.all(np.equal(x_out, x_thin)):
             break
         else:
             x_thin = x_out
@@ -240,13 +148,13 @@ def greyscale_trimming(input_image: torch.Tensor, iterations: Optional[int] = No
     return x_thin
 
 
-def binary_thinning(image_input: torch.Tensor, iterations: Optional[int] = None, direction: str = 'h',
+def binary_thinning(image_input: np.ndarray, iterations: Optional[int] = None, direction: str = 'h',
                     verbose=False, verbose_it_step=10):
-    x_thin = torch.clone(image_input)
+    x_thin = np.copy(image_input)
     count = 0
     while True:
         x_out = elementary_binary_thinning(x_thin, direction)
-        if torch.all(torch.eq(x_out, x_thin)):
+        if np.all(np.equal(x_out, x_thin)):
             break
         else:
             x_thin = x_out
@@ -262,45 +170,45 @@ def binary_thinning(image_input: torch.Tensor, iterations: Optional[int] = None,
     return x_thin
 
 
-def elementary_binary_thinning(x: torch.Tensor, direction: str = 'h', border='g'):
+def elementary_binary_thinning(x: np.ndarray, direction: str = 'h'):
     if direction == 'h':
-        x_simple = binary_hit_or_miss(x, C_E, D_E, border=border)
-        x_thin = torch.logical_and(x, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x, C_E, D_E)
+        x_thin = np.logical_and(x, np.logical_not(x_simple))
 
-        x_simple = binary_hit_or_miss(x_thin, C_W, D_W, border=border)
-        x_thin = torch.logical_and(x_thin, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x_thin, C_W, D_W)
+        x_thin = np.logical_and(x_thin, np.logical_not(x_simple))
 
-        x_simple = binary_hit_or_miss(x_thin, C_NW, D_NW, border=border)
-        x_thin = torch.logical_and(x_thin, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x_thin, C_NW, D_NW)
+        x_thin = np.logical_and(x_thin, np.logical_not(x_simple))
 
-        x_simple = binary_hit_or_miss(x_thin, C_SE, D_SE, border=border)
-        x_thin = torch.logical_and(x_thin, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x_thin, C_SE, D_SE)
+        x_thin = np.logical_and(x_thin, np.logical_not(x_simple))
 
-        x_simple = binary_hit_or_miss(x_thin, C_NE, D_NE, border=border)
-        x_thin = torch.logical_and(x_thin, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x_thin, C_NE, D_NE)
+        x_thin = np.logical_and(x_thin, np.logical_not(x_simple))
 
-        x_simple = binary_hit_or_miss(x_thin, C_SW, D_SW, border=border)
-        x_thin = torch.logical_and(x_thin, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x_thin, C_SW, D_SW)
+        x_thin = np.logical_and(x_thin, np.logical_not(x_simple))
 
         return x_thin
     elif direction == 'v':
-        x_simple = binary_hit_or_miss(x, C_N, D_N, border=border)
-        x_thin = torch.logical_and(x, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x, C_N, D_N)
+        x_thin = np.logical_and(x, np.logical_not(x_simple))
 
-        x_simple = binary_hit_or_miss(x_thin, C_S, D_S, border=border)
-        x_thin = torch.logical_and(x_thin, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x_thin, C_S, D_S)
+        x_thin = np.logical_and(x_thin, np.logical_not(x_simple))
 
-        x_simple = binary_hit_or_miss(x_thin, C_NE, D_NE, border=border)
-        x_thin = torch.logical_and(x_thin, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x_thin, C_NE, D_NE)
+        x_thin = np.logical_and(x_thin, np.logical_not(x_simple))
 
-        x_simple = binary_hit_or_miss(x_thin, C_SW, D_SW, border=border)
-        x_thin = torch.logical_and(x_thin, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x_thin, C_SW, D_SW)
+        x_thin = np.logical_and(x_thin, np.logical_not(x_simple))
 
-        x_simple = binary_hit_or_miss(x_thin, C_NW, D_NW, border=border)
-        x_thin = torch.logical_and(x_thin, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x_thin, C_NW, D_NW)
+        x_thin = np.logical_and(x_thin, np.logical_not(x_simple))
 
-        x_simple = binary_hit_or_miss(x_thin, C_SE, D_SE, border=border)
-        x_thin = torch.logical_and(x_thin, torch.logical_not(x_simple))
+        x_simple = morph.binary_hit_or_miss(x_thin, C_SE, D_SE)
+        x_thin = np.logical_and(x_thin, np.logical_not(x_simple))
 
         return x_thin
     else:
@@ -308,18 +216,18 @@ def elementary_binary_thinning(x: torch.Tensor, direction: str = 'h', border='g'
 
 
 def skeleton(image_input, shape=(3, 3), n_max=None):
-    str_el = torch.ones(shape, dtype=torch.bool).to(image_input.device)
+    str_el = np.ones(shape, dtype=np.bool).astype(image_input.device)
 
-    result = torch.zeros_like(image_input)
-    tmp = torch.clone(image_input)
+    result = np.zeros_like(image_input)
+    tmp = np.copy(image_input)
 
     n = 1
-    while torch.any(tmp):
-        opening = binary.opening(tmp, str_el)
-        top_hat = torch.logical_and(tmp, torch.logical_not(opening))
-        result = torch.logical_or(result, top_hat)
+    while np.any(tmp):
+        opening = morph.binary_opening(tmp, str_el)
+        top_hat = np.logical_and(tmp, np.logical_not(opening))
+        result = np.logical_or(result, top_hat)
 
-        tmp = binary.erosion(tmp, str_el)
+        tmp = morph.binary_erosion(tmp, str_el)
 
         n += 1
         if n_max is not None:
@@ -329,12 +237,12 @@ def skeleton(image_input, shape=(3, 3), n_max=None):
     return result
 
 
-def remove_isolated_greyscale(input_image: torch.Tensor):
-    d = greyscale.dilation(input_image, torch.zeros_like(B_O, dtype=input_image.dtype), B_O)
-    e = greyscale.erosion(input_image, torch.zeros_like(B_O, dtype=input_image.dtype), B_O, border='g')
-    is_plateau = torch.eq(d, e)
-    is_bigger = torch.gt(input_image, d)
+def remove_isolated_greyscale(input_image: np.ndarray):
+    d = morph.grey_dilation(input_image, structure=np.zeros_like(B_O), footprint=B_O)
+    e = morph.grey_erosion(input_image, structure=np.zeros_like(B_O), footprint=B_O)
+    is_plateau = np.equal(d, e)
+    is_bigger = np.greater(input_image, d)
 
-    is_isolated = torch.logical_and(is_plateau, is_bigger)
+    is_isolated = np.logical_and(is_plateau, is_bigger)
 
     input_image[is_isolated] = d[is_isolated]

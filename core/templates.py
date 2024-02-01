@@ -1,168 +1,166 @@
-import torch
-
-DEVICE = 'cuda:0'
+import numpy as np
 
 # Thinning templates
-C = torch.Tensor([[1]]).to(torch.bool).to(DEVICE)
+C = np.array([[1]])
 
-C_W = torch.Tensor([
+C_W = np.array([
     [0, 0, 0],
     [0, 1, 1],
     [0, 0, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_W = torch.Tensor([
+D_W = np.array([
     [1, 0, 0],
     [1, 0, 0],
     [1, 0, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-C_E = torch.Tensor([
+C_E = np.array([
     [0, 0, 0],
     [1, 1, 0],
     [0, 0, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_E = torch.Tensor([
+D_E = np.array([
     [0, 0, 1],
     [0, 0, 1],
     [0, 0, 1]
-]).to(torch.bool).to(DEVICE)
+])
 
-C_N = torch.Tensor([
+C_N = np.array([
     [0, 0, 0],
     [0, 1, 0],
     [0, 1, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_N = torch.Tensor([
+D_N = np.array([
     [1, 1, 1],
     [0, 0, 0],
     [0, 0, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-C_S = torch.Tensor([
+C_S = np.array([
     [0, 1, 0],
     [0, 1, 0],
     [0, 0, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_S = torch.Tensor([
+D_S = np.array([
     [0, 0, 0],
     [0, 0, 0],
     [1, 1, 1]
-]).to(torch.bool).to(DEVICE)
+])
 
 # Restoring
-C_WE = torch.Tensor([
+C_WE = np.array([
     [0, 1, 1, 0],
-]).to(torch.bool).to(DEVICE)
+])
 
-D_WE = torch.Tensor([
+D_WE = np.array([
     [1, 0, 0, 1],
-]).to(torch.bool).to(DEVICE)
+])
 
 ORIGIN_WE = (0, 1)
 ORIGIN_WE_DIL = (0, 2)
 
-C_NS = torch.Tensor([
+C_NS = np.array([
     [0],
     [1],
     [1],
     [0],
-]).to(torch.bool).to(DEVICE)
+])
 
-D_NS = torch.Tensor([
+D_NS = np.array([
     [1],
     [0],
     [0],
     [1],
-]).to(torch.bool).to(DEVICE)
+])
 
 ORIGIN_NS = (1, 0)
 ORIGIN_NS_DIL = (2, 0)
 
 # Trimming
-C_NE = torch.Tensor([
+C_NE = np.array([
     [0, 0, 0],
     [1, 1, 0],
     [0, 1, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_NE = torch.Tensor([
+D_NE = np.array([
     [0, 1, 1],
     [0, 0, 1],
     [0, 0, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-C_NW = torch.Tensor([
+C_NW = np.array([
     [0, 0, 0],
     [0, 1, 1],
     [0, 1, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_NW = torch.Tensor([
+D_NW = np.array([
     [1, 1, 0],
     [1, 0, 0],
     [0, 0, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-C_SW = torch.Tensor([
+C_SW = np.array([
     [0, 1, 0],
     [0, 1, 1],
     [0, 0, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_SW = torch.Tensor([
+D_SW = np.array([
     [0, 0, 0],
     [1, 0, 0],
     [1, 1, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-C_SE = torch.Tensor([
+C_SE = np.array([
     [0, 1, 0],
     [1, 1, 0],
     [0, 0, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_SE = torch.Tensor([
+D_SE = np.array([
     [0, 0, 0],
     [0, 0, 1],
     [0, 1, 1]
-]).to(torch.bool).to(DEVICE)
+])
 
-C_WT = torch.Tensor([
+C_WT = np.array([
     [0, 0, 0],
     [0, 1, 1],
     [0, 0, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_WT = torch.Tensor([
+D_WT = np.array([
     [1, 1, 0],
     [1, 0, 0],
     [1, 1, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_ET = torch.Tensor([
+D_ET = np.array([
     [0, 1, 1],
     [0, 0, 1],
     [0, 1, 1]
-]).to(torch.bool).to(DEVICE)
+])
 
-C_NT = torch.Tensor([
+C_NT = np.array([
     [0, 0, 0],
     [0, 1, 0],
     [0, 1, 0]
-]).to(torch.bool).to(DEVICE)
+])
 
-D_NT = torch.Tensor([
+D_NT = np.array([
     [1, 1, 1],
     [1, 0, 1],
     [1, 0, 1]
-]).to(torch.bool).to(DEVICE)
+])
 
-B_O = torch.Tensor([
+B_O = np.array([
     [1, 1, 1],
     [1, 0, 1],
     [1, 1, 1]
-]).to(torch.bool).to(DEVICE)
+])

@@ -4,7 +4,7 @@ from core.parameters import MIN_DB
 
 
 def plot_single(spectrogram, name, title, images_folder, v_min=MIN_DB, v_max=0, c_map='afmhot', paper=None):
-    fig = plot_stft(spectrogram.cpu().numpy(), v_min=v_min, v_max=v_max, c_map=c_map, title=title,
+    fig = plot_stft(spectrogram, v_min=v_min, v_max=v_max, c_map=c_map, title=title,
                     fig_size=paper.get('fig_size', (6., 4.)) if paper is not None else (6., 4.))
 
     if paper is not None:
@@ -24,7 +24,7 @@ def plot_compare(spectrogram_1, spectrogram_2, name, title, images_folder,
                  v_min_1=MIN_DB, v_max_1: Optional[int] = 0, v_min_2=MIN_DB, v_max_2: Optional[int] = 0,
                  c_map_1='afmhot', c_map_2='afmhot', paper=None):
     fig_size = (8., 4.) if paper is None else paper.get('fig_size', (8., 4.))
-    fig = plot_two_spectrogram(spectrogram_1.cpu().numpy(), spectrogram_2.cpu().numpy(),
+    fig = plot_two_spectrogram(spectrogram_1, spectrogram_2,
                                v_min_1=v_min_1, v_max_1=v_max_1, v_min_2=v_min_2, v_max_2=v_max_2,
                                c_map_1=c_map_1, c_map_2=c_map_2, title=title,
                                fig_size=fig_size,
@@ -60,7 +60,7 @@ def plot_compare(spectrogram_1, spectrogram_2, name, title, images_folder,
 
 
 def plot_input_lines(horizontal_lines, vertical_lines, spectrogram, images_folder, paper=None):
-    fig = plot_stft(spectrogram.cpu().numpy(), v_min=MIN_DB, v_max=0, c_map='afmhot', title='Input + lines',
+    fig = plot_stft(spectrogram, v_min=MIN_DB, v_max=0, c_map='afmhot', title='Input + lines',
                     full_screen=False, fig_size=paper.get('fig_size', (6., 4.)),
                     cb=paper.get('cb', True) if paper is not None else True)
 
@@ -91,7 +91,7 @@ def plot_input_lines(horizontal_lines, vertical_lines, spectrogram, images_folde
 
 
 def plot_input_lines_filtered(lines, filtered_lines, spectrogram, images_folder, paper=None):
-    fig = plot_stft(spectrogram.cpu().numpy(), v_min=MIN_DB, v_max=0, c_map='afmhot', title='Input + lines',
+    fig = plot_stft(spectrogram, v_min=MIN_DB, v_max=0, c_map='afmhot', title='Input + lines',
                     full_screen=False, fig_size=paper.get('fig_size', (6., 4.)),
                     cb=paper.get('cb', True) if paper is not None else True)
 

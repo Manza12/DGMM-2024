@@ -9,6 +9,7 @@ N_FFT = WIN_LENGTH * OVERSAMPLING  # samples
 FREQUENCY_PRECISION = FS / N_FFT  # Hz
 TIME_RESOLUTION = 0.01  # s
 HOP_LENGTH = int(FS * TIME_RESOLUTION)  # samples
+N_OVERLAP = WIN_LENGTH - HOP_LENGTH  # samples
 WINDOW = 'blackman'  # ('gaussian', 1/100) or 'hann'
 PAD_MODE = 'constant'  # 'constant' or 'reflect'
 OUTPUT_FORMAT = 'Complex'  # 'Magnitude' or 'Complex'
@@ -28,7 +29,6 @@ TOP_HAT_DIFF_THRESHOLD = 5  # dB
 TOP_HAT_ABS_THRESHOLD = -100  # dB
 VERTICAL_THINNING_ITERATIONS = None  # no unit
 HORIZONTAL_THINNING_ITERATIONS = None  # no unit
-RECONSTRUCTION_EROSION_ITERATIONS = None  # no unit
 
 # Sinusoids parameters
 MIN_AMPLI_DB = -100  # dB

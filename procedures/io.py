@@ -88,6 +88,10 @@ def write_signals(signals, paths, components):
         write_wav(input_path, x)
 
     if components['noise']:
+        white_noise = signals['white_noise']
+        white_noise_path = audio_folder / 'white_noise.wav'
+        write_wav(white_noise_path, white_noise)
+
         filtered_noise = signals['filtered_noise']
         filtered_noise_path = audio_folder / 'filtered_noise.wav'
         write_wav(filtered_noise_path, filtered_noise)

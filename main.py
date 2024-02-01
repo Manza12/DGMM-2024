@@ -1,7 +1,7 @@
 import sys
 
 from core import *
-from core.layers import create_stft_layer, apply_stft_layer
+from core.layers import apply_stft_layer
 from core.parameters import TIME_RESOLUTION, FREQUENCY_PRECISION, WINDOW
 
 from procedures.io import load_or_compute, write_signals, take_excerpt
@@ -20,10 +20,10 @@ log = False
 components = {
     'input': True,
     'noise': True,
-    'sinusoids': True,
-    'transient': True,
-    'output': True,
-    'denoised': True,
+    'sinusoids': False,
+    'transient': False,
+    'output': False,
+    'denoised': False,
 }
 
 operations = {
@@ -118,11 +118,8 @@ start = settings['start']
 end = settings['end']
 x = take_excerpt(paths['file_path'], start, end)
 
-# Create STFT layer
-stft_layer = load_or_compute(layer_name, paths['objects_folder'], load, create_stft_layer)
-
 # Apply STFT layer
-spectrogram = load_or_compute('spectrogram', paths['arrays_folder'], load, lambda: apply_stft_layer(x, stft_layer))
+spectrogram = load_or_compute('spectrogram', paths['arrays_folder'], load, lambda: apply_stft_layer(x))
 
 # Morphology
 spectrograms = {'input': spectrogram}
@@ -136,7 +133,7 @@ signals = {'input': x}
 lines = {}
 if operations['synthesis']:
     print('\nSynthesis...')
-    synthesize_signals(lines, signals, spectrograms, paths, load, components, stft_layer)
+    synthesize_signals(lines, signals, spectrograms, paths, load, components)
 
     # Write signals
     write_signals(signals, paths, components)

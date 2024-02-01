@@ -7,7 +7,7 @@ from core.utils import get_duration, to_db
 from .io import load_or_compute
 
 
-def synthesize_noise_signal(signals, spectrograms, paths, load, stft_layer):
+def synthesize_noise_signal(signals, spectrograms, paths, load):
     print('\nSynthesis - Noise')
 
     n = signals['input'].size
@@ -15,26 +15,25 @@ def synthesize_noise_signal(signals, spectrograms, paths, load, stft_layer):
     # White noise
     white_noise = load_or_compute('white_noise', paths['arrays_folder'], load, lambda: synthesize_white_noise(n))
 
-    white_noise_stft = apply_stft_layer(white_noise, stft_layer, verbose=True, output_format='Complex',
-                                        input_name='white noise')
+    white_noise_stft = apply_stft_layer(white_noise, verbose=True, output_format='Complex', input_name='white noise')
 
     # Noise
     filtered_noise = load_or_compute('filtered_noise', paths['audio_folder'], load,
                                      lambda: synthesize_noise_mask(white_noise_stft, spectrograms['opening'],
-                                                                   stft_layer, verbose=True),
+                                                                   verbose=True),
                                      extension='.wav')
 
     signals['white_noise'] = white_noise
     signals['filtered_noise'] = filtered_noise
 
-    spectrogram_white_noise = to_db(torch.sqrt(white_noise_stft[:, :, 0]**2 + white_noise_stft[:, :, 1]**2))
-    spectrogram_filtered_noise = apply_stft_layer(filtered_noise, stft_layer, verbose=True, input_name='filtered noise')
+    spectrogram_white_noise = to_db(np.sqrt(np.abs(white_noise_stft)**2))
+    spectrogram_filtered_noise = apply_stft_layer(filtered_noise, verbose=True, input_name='filtered noise')
 
     spectrograms['white_noise'] = spectrogram_white_noise
     spectrograms['filtered_noise'] = spectrogram_filtered_noise
 
 
-def synthesize_sinusoids_signal(lines, signals, spectrograms, paths, load, stft_layer):
+def synthesize_sinusoids_signal(lines, signals, spectrograms, paths, load):
     print('\nSynthesis - Sinusoids')
 
     lines_sinusoids = load_or_compute('lines_sinusoids', paths['arrays_folder'], load,
@@ -48,12 +47,12 @@ def synthesize_sinusoids_signal(lines, signals, spectrograms, paths, load, stft_
 
     signals['sinusoids'] = sinusoids
 
-    spectrogram_sinusoids = apply_stft_layer(sinusoids, stft_layer, verbose=True, input_name='sinusoids')
+    spectrogram_sinusoids = apply_stft_layer(sinusoids, verbose=True, input_name='sinusoids')
 
     spectrograms['sinusoids'] = spectrogram_sinusoids
 
 
-def synthesize_transient_signal(lines, signals, spectrograms, paths, load, stft_layer):
+def synthesize_transient_signal(lines, signals, spectrograms, paths, load):
     print('\nSynthesis - Transient')
 
     lines_transient = load_or_compute('lines_transient', paths['arrays_folder'], load,
@@ -68,12 +67,12 @@ def synthesize_transient_signal(lines, signals, spectrograms, paths, load, stft_
 
     signals['transient'] = transient
 
-    spectrogram_transient = apply_stft_layer(transient, stft_layer, verbose=True, input_name='transient')
+    spectrogram_transient = apply_stft_layer(transient, verbose=True, input_name='transient')
 
     spectrograms['transient'] = spectrogram_transient
 
 
-def synthesize_output_signal(signals, spectrograms, stft_layer):
+def synthesize_output_signal(signals, spectrograms):
     filtered_noise = signals.get('filtered_noise', np.zeros_like(signals['input']))
     sinusoids = signals.get('sinusoids', np.zeros_like(signals['input']))
     transient = signals.get('transient', np.zeros_like(signals['input']))
@@ -94,19 +93,19 @@ def synthesize_output_signal(signals, spectrograms, stft_layer):
     signals['output'] = output
     signals['denoised'] = denoised
 
-    spectrogram_output = apply_stft_layer(output, stft_layer, verbose=True, input_name='output')
-    spectrogram_denoised = apply_stft_layer(denoised, stft_layer, verbose=True, input_name='denoised')
+    spectrogram_output = apply_stft_layer(output, verbose=True, input_name='output')
+    spectrogram_denoised = apply_stft_layer(denoised, verbose=True, input_name='denoised')
 
     spectrograms['output'] = spectrogram_output
     spectrograms['denoised'] = spectrogram_denoised
 
 
-def synthesize_signals(lines, signals, spectrograms, paths, load, components, stft_layer):
+def synthesize_signals(lines, signals, spectrograms, paths, load, components):
     if components['noise']:
-        synthesize_noise_signal(signals, spectrograms, paths, load, stft_layer)
+        synthesize_noise_signal(signals, spectrograms, paths, load)
     if components['sinusoids']:
-        synthesize_sinusoids_signal(lines, signals, spectrograms, paths, load, stft_layer)
+        synthesize_sinusoids_signal(lines, signals, spectrograms, paths, load)
     if components['transient']:
-        synthesize_transient_signal(lines, signals, spectrograms, paths, load, stft_layer)
+        synthesize_transient_signal(lines, signals, spectrograms, paths, load)
     if components['output']:
-        synthesize_output_signal(signals, spectrograms, stft_layer)
+        synthesize_output_signal(signals, spectrograms)
