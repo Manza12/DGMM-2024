@@ -11,8 +11,10 @@ from procedures.synthesis import synthesize_signals
 
 import settings as run_settings
 
+plt.rcParams.update({'figure.max_open_warning': 0})
+
 # Parameters
-name = 'piano'
+name = 'anastasia'
 settings = getattr(run_settings, name)
 load_any = True
 log = False

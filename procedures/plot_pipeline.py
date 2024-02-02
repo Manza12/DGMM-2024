@@ -14,7 +14,7 @@ def plot_single(spectrogram, name, title, images_folder, v_min=MIN_DB, v_max=0, 
             fig.axes[0].set_xlim(paper['x_lim'][0] / TIME_RESOLUTION, paper['x_lim'][1] / TIME_RESOLUTION)
         if paper.get('y_lim', None) is not None:
             fig.axes[0].set_ylim(paper['y_lim'][0] / FREQUENCY_PRECISION, paper['y_lim'][1] / FREQUENCY_PRECISION)
-        fig.savefig(images_folder / (paper['name'] + '.pdf'), dpi=300)
+        fig.savefig(images_folder / (paper.get('name', name) + '.pdf'), dpi=300)
     else:
         fig.savefig(images_folder / (name + '.pdf'), dpi=300)
 
@@ -54,13 +54,13 @@ def plot_compare(spectrogram_1, spectrogram_2, name, title, images_folder,
         split_folder = images_folder / 'split'
         split_folder.mkdir(parents=True, exist_ok=True)
 
-        fig.savefig(split_folder / (paper['name'] + '_0.pdf'), dpi=dpi, bbox_inches=bbox_0)
-        fig.savefig(split_folder / (paper['name'] + '_1.pdf'), dpi=dpi, bbox_inches=bbox_1)
+        fig.savefig(split_folder / (paper.get('name', name) + '_0.pdf'), dpi=dpi, bbox_inches=bbox_0)
+        fig.savefig(split_folder / (paper.get('name', name) + '_1.pdf'), dpi=dpi, bbox_inches=bbox_1)
 
     return fig
 
 
-def plot_input_lines(horizontal_lines, vertical_lines, spectrogram, images_folder, paper=None):
+def plot_input_lines(horizontal_lines, vertical_lines, spectrogram, images_folder, paper=None, name='input_lines'):
     fig = plot_stft(spectrogram, v_min=MIN_DB, v_max=0, c_map='afmhot', title='Input + lines',
                     full_screen=False, fig_size=paper.get('fig_size', (6., 4.)),
                     cb=paper.get('cb', True) if paper is not None else True)
@@ -88,10 +88,10 @@ def plot_input_lines(horizontal_lines, vertical_lines, spectrogram, images_folde
 
         plt.tight_layout()
 
-        fig.savefig(images_folder / (paper['name'] + '.pdf'), dpi=dpi)
+        fig.savefig(images_folder / (paper.get('name', name) + '.pdf'), dpi=dpi)
 
 
-def plot_input_lines_filtered(lines, filtered_lines, spectrogram, images_folder, paper=None):
+def plot_input_lines_filtered(lines, filtered_lines, spectrogram, images_folder, paper=None, name='input_lines'):
     fig = plot_stft(spectrogram, v_min=MIN_DB, v_max=0, c_map='afmhot', title='Input + lines',
                     full_screen=False, fig_size=paper.get('fig_size', (6., 4.)),
                     cb=paper.get('cb', True) if paper is not None else True)
@@ -113,7 +113,7 @@ def plot_input_lines_filtered(lines, filtered_lines, spectrogram, images_folder,
 
         plt.tight_layout()
 
-        fig.savefig(images_folder / (paper['name'] + '.pdf'), dpi=dpi)
+        fig.savefig(images_folder / (paper.get('name', name) + '.pdf'), dpi=dpi)
 
 
 def plot_input(spectrograms, paths, settings):
@@ -206,7 +206,8 @@ def plot_sinusoids(lines, spectrograms, paths, settings):
     if settings.get('lines_sinusoids', None) is not None:
         plot_input_lines_filtered(lines['sinusoids'], lines['filtered_sinusoids'], spectrograms['input'],
                                   images_folder,
-                                  paper=settings['lines_sinusoids'])
+                                  paper=settings['lines_sinusoids'],
+                                  name='lines_sinusoids')
 
     # Input - Sinusoids spectrogram
     if settings.get('input_sinusoids', None) is not None:
@@ -278,7 +279,8 @@ def plot_output(spectrograms, lines, paths, settings):
     if settings.get('input_lines', None) is not None:
         plot_input_lines(lines['sinusoids'], lines['transient'], spectrograms['input'],
                          images_folder,
-                         paper=settings['input_lines'])
+                         paper=settings['input_lines'],
+                         name='input_lines')
 
     # Input - Output spectrogram
     if settings.get('input_output', None) is not None:
